@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="ModbusView.WriteUserControl"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:local="clr-namespace:ModbusView"
+			 mc:Ignorable="d"
+			 FontSize="18"
+			 Background="White">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="10"></ColumnDefinition>
+			<ColumnDefinition Width="224*"></ColumnDefinition>
+			<ColumnDefinition Width="47*" />
+			<ColumnDefinition Width="10"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="10"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="15"></RowDefinition>
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="1"
+					Grid.ColumnSpan="4">
+			<Label Margin="10, 5, 10, 5">Pick an action:</Label>
+			<ComboBox  x:Name="ActionComboBox"
+					   Margin="10, 0, 10, 5"></ComboBox>
+			<Label Margin="10, 5, 10, 5">Slave address:</Label>
+			<TextBox x:Name="SlaveAddressTextBox"
+					 Margin="10, 0, 10, 5"></TextBox>
+			<Label Margin="10, 5, 10, 5">Start address:</Label>
+			<TextBox x:Name="StartAddressTextBox"
+					 Margin="10, 0, 10, 5"></TextBox>
+			<Label Margin="10, 5, 10, 5">Values (separate with comma):</Label>
+			<TextBox x:Name="ValuesTextBox"
+					 Margin="10, 0, 10, 5"></TextBox>
+			<Button x:Name="WriteButton"
+					Margin="0, 15, 0, 0"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Bottom"
+					Click="WriteButton_Click">Write</Button>
+		</StackPanel>
+	</Grid>
+</UserControl>
