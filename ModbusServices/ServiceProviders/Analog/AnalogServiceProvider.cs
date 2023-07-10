@@ -2,6 +2,7 @@
 using Common.ResponseDto;
 using ModbusServices.ResponseDto.Analog;
 using System;
+using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
@@ -14,13 +15,13 @@ namespace ModbusServices.ServiceProviders
 			this.service = service;
 		}
 
-		public IAnalogReadResponse ReadHolding(IModbusActionParams actionParams)
+		public async Task<IAnalogReadResponse> ReadHolding(IModbusActionParams actionParams)
 		{
 			IAnalogReadResponse response;
 
 			try
 			{
-				ushort[] result = service.ReadHolding(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
+				ushort[] result = await service.ReadHolding(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
 
 				response = new AnalogReadResponse(true, result);
 			}
@@ -32,13 +33,13 @@ namespace ModbusServices.ServiceProviders
 			return response;
 		}
 
-		public IAnalogReadResponse ReadInput(IModbusActionParams actionParams)
+		public async Task<IAnalogReadResponse> ReadInput(IModbusActionParams actionParams)
 		{
 			IAnalogReadResponse response;
 
 			try
 			{
-				ushort[] result = service.ReadAnalogInput(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
+				ushort[] result = await service.ReadAnalogInput(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
 
 				response = new AnalogReadResponse(true, result);
 			}

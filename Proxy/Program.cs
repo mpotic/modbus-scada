@@ -1,16 +1,16 @@
-﻿using Common.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Proxy
 {
-	class Program
+    class Program
 	{
 		static void Main(string[] args)
 		{
+			Menu menu = new Menu();
+
+			menu.Begin();
+			
+			menu.ReadInput();
 		}
 	}
 }

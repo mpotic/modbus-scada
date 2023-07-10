@@ -48,8 +48,8 @@
     <Compile Include="Api\IConnectionApi.cs" />
     <Compile Include="Api\IDiscreteApi.cs" />
     <Compile Include="IMessageBoxCallback.cs" />
-    <Compile Include="IModbusApiHandler.cs" />
-    <Compile Include="ModbusApiHandler.cs" />
+    <Compile Include="IApiHandler.cs" />
+    <Compile Include="ApiHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\IReadResultsViewModel.cs" />
     <Compile Include="ViewModel\ReadResultsViewModel.cs" />

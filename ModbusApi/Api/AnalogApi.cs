@@ -24,9 +24,10 @@ namespace ModbusApi.Api
 			this.readResultsViewModel = readResultsViewModel;
 			this.messageBoxCallback = messageBoxCallback;
 		}
-		public void ReadInput(IModbusActionParams actionParams)
+
+		public async void ReadInput(IModbusActionParams actionParams)
 		{
-			IAnalogReadResponse response = analogService.ReadInput(actionParams);
+			IAnalogReadResponse response = await analogService.ReadInput(actionParams);
 
 			if (!response.IsSuccessfull)
 			{
@@ -37,9 +38,9 @@ namespace ModbusApi.Api
 			UpdateViewModel(response.Values, actionParams.StartAddress);
 		}
 
-		public void ReadHolding(IModbusActionParams actionParams)
+		public async void ReadHolding(IModbusActionParams actionParams)
 		{
-			IAnalogReadResponse response = analogService.ReadHolding(actionParams);
+			IAnalogReadResponse response = await analogService.ReadHolding(actionParams);
 
 			if (!response.IsSuccessfull)
 			{

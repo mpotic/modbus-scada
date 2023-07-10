@@ -2,7 +2,7 @@
 
 namespace ModbusApi
 {
-	public interface IModbusApiHandler
+	public interface IApiHandler
 	{
 		IAnalogApi AnalogApi { get; set; }
 

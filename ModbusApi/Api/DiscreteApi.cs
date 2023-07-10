@@ -25,9 +25,9 @@ namespace ModbusApi.Api
 			this.messageBoxCallback = messageBoxCallback;
 		}
 
-		public void ReadInput(IModbusActionParams actionParams)
+		public async void ReadInput(IModbusActionParams actionParams)
 		{
-			IDiscreteReadResponse response = discreteService.ReadInput(actionParams);
+			IDiscreteReadResponse response = await discreteService.ReadInput(actionParams);
 
 			if (!response.IsSuccessfull)
 			{
@@ -38,9 +38,9 @@ namespace ModbusApi.Api
 			UpdateViewModel(response.Values, actionParams.StartAddress);
 		}
 
-		public void ReadCoil(IModbusActionParams actionParams)
+		public async void ReadCoil(IModbusActionParams actionParams)
 		{
-			IDiscreteReadResponse response = discreteService.ReadCoil(actionParams);
+			IDiscreteReadResponse response = await discreteService.ReadCoil(actionParams);
 
 			if (!response.IsSuccessfull)
 			{

@@ -6,26 +6,32 @@
 			 mc:Ignorable="d"
 			 FontSize="18"
 			 Background="White">
-	<Grid>
-		<StackPanel>
-			<Label Margin="10, 5, 10, 5">Choose port:</Label>
-			<TextBox x:Name="ServerPort"
-					 Margin="10, 0, 10, 5">21000</TextBox>
-			<Label Margin="10, 5, 10, 5">Client port:</Label>
-			<TextBox x:Name="ClientPort"
+    <Grid>
+        <StackPanel>
+            <Border Margin="5" BorderBrush="gray" BorderThickness="1">
+                <StackPanel>
+                    <Label Margin="10, 5, 10, 5">Modbus Client port:</Label>
+                    <TextBox x:Name="ModbusClientPort"
 					 Margin="10, 0, 10, 5">502</TextBox>
-			<DockPanel>
-				<Button x:Name="ModbusConnectButton"
+                    <Button x:Name="ModbusConnectButton"
 						Margin="10, 15, 10, 15"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Bottom"
 						Click="ModbusConnectButton_Click">Modbus Connect</Button>
-				<Button x:Name="StandardConnectButton"
-						Margin="0, 15, 10, 15"
+                </StackPanel>
+            </Border>
+            <Border Margin="5" BorderBrush="gray" BorderThickness="1">
+                <StackPanel>
+                    <Label Margin="10, 5, 10, 5">Standard Client port:</Label>
+                    <TextBox x:Name="StandardClientPort"
+					 Margin="10, 0, 10, 5">21000</TextBox>
+                    <Button x:Name="StandardConnectButton"
+						Margin="10, 15, 10, 15"
 						HorizontalAlignment="Center"
 						VerticalAlignment="Bottom"
 						Click="StandardConnectButton_Click">Standard Connect</Button>
-			</DockPanel>
-		</StackPanel>
-	</Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
 </UserControl>

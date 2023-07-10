@@ -7,6 +7,11 @@ namespace ModbusServices.ServiceProviders
 	{
 		IOperationResponse StandardConnect(IConnectionParams connectionParams);
 
-		IOperationResponse ModbusConnect(IConnectionParams connectionParams);
+        /// <summary>
+        /// Firstly initializes the Modbus service if needed. Initialize the connection to the Modbus slave using IModbusMaster.
+        /// </summary>
+        /// <param name="connectionParams">Specifies clients port.</param>
+        /// <returns></returns>
+        IOperationResponse ModbusConnect(IConnectionParams connectionParams);
 	}
 }

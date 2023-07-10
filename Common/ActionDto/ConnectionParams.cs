@@ -8,7 +8,13 @@
 			ServerPort = serverPort;
 		}
 
-		public int ServerPort { get; set; }
+        public ConnectionParams(int clientPort)
+        {
+            ClientPort = clientPort;
+			ServerPort = -1;
+        }
+
+        public int ServerPort { get; set; }
 
 		public int ClientPort { get; set; }
 	}

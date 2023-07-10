@@ -1,4 +1,5 @@
 ﻿using ModbusServices.Connection;
+using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
@@ -11,30 +12,30 @@ namespace ModbusServices.ServiceProviders
 			this.connection = connection;
 		}
 
-		public ushort[] ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
+		public async Task<ushort[]> ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
 		{
-			ushort[] response = connection.ModbusMaster.ReadHoldingRegisters(slaveAddress, startAddress, numberOfPoints);
+			ushort[] response = await connection.ModbusMaster.ReadHoldingRegistersAsync(slaveAddress, startAddress, numberOfPoints);
 
 			return response;
 		}
 
-		public ushort[] ReadAnalogInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
+		public async Task<ushort[]> ReadAnalogInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
 		{
-			ushort[] response = connection.ModbusMaster.ReadInputRegisters(slaveAddress, startAddress, numberOfPoints);
+			ushort[] response = await connection.ModbusMaster.ReadInputRegistersAsync(slaveAddress, startAddress, numberOfPoints);
 
 			return response;
 		}
 
-		public bool[] ReadCoil(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
+		public async Task<bool[]> ReadCoil(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
 		{
-			bool[] response = connection.ModbusMaster.ReadCoils(slaveAddress, startAddress, numberOfPoints);
+			bool[] response = await connection.ModbusMaster.ReadCoilsAsync(slaveAddress, startAddress, numberOfPoints);
 
 			return response;
 		}
 
-		public bool[] ReadDiscreteInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
+		public async Task<bool[]> ReadDiscreteInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
 		{
-			bool[] response = connection.ModbusMaster.ReadInputs(slaveAddress, startAddress, numberOfPoints);
+			bool[] response = await connection.ModbusMaster.ReadInputsAsync(slaveAddress, startAddress, numberOfPoints);
 
 			return response;
 		}

@@ -25,16 +25,14 @@ namespace ModbusView
 
 		private void ModbusConnectButton_Click(object sender, RoutedEventArgs e)
 		{
-			int serverPort;
 			int clientPort;
 			IConnectionParams connectionParams;
 
 			try
 			{
-				serverPort = int.Parse(ServerPort.Text);
-				clientPort = int.Parse(ClientPort.Text);
+				clientPort = int.Parse(ModbusClientPort.Text);
 
-				connectionParams = new ConnectionParams(clientPort, serverPort);
+				connectionParams = new ConnectionParams(clientPort);
 
 				actionMap[ActionCode.ModbusConnect].SetParams(connectionParams);
 				actionMap[ActionCode.ModbusConnect].Execute();
@@ -47,16 +45,14 @@ namespace ModbusView
 
 		private void StandardConnectButton_Click(object sender, RoutedEventArgs e)
 		{
-			int serverPort;
 			int clientPort;
 			IConnectionParams connectionParams;
 
 			try
 			{
-				serverPort = int.Parse(ServerPort.Text);
-				clientPort = int.Parse(ClientPort.Text);
+				clientPort = int.Parse(StandardClientPort.Text);
 
-				connectionParams = new ConnectionParams(clientPort, serverPort);
+				connectionParams = new ConnectionParams(clientPort);
 
 				actionMap[ActionCode.StandardConnect].SetParams(connectionParams);
 				actionMap[ActionCode.StandardConnect].Execute();

@@ -1,9 +1,9 @@
-﻿using Common.Util;
+﻿using Common.Connection;
 
 namespace ModbusServices.Connection
 {
-	class StandardConnection : IStandardConnection
+    class StandardConnection : IStandardConnection
 	{
-		public ITcpConnectionHandler Connection { get; set; } = new TcpConnectionHandler();
+		public ITcpSocketHandler Connection { get; set; } = new TcpSocketHandler();
 	}
 }

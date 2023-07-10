@@ -1,6 +1,8 @@
-﻿namespace Common.Util
+﻿using System.Threading.Tasks;
+
+namespace Common.Connection
 {
-	public interface ITcpConnectionHandler
+	public interface ITcpHandler
 	{
 		/// <summary>
 		/// Establishes a listening socket and puts it in listening state.
@@ -14,7 +16,7 @@
 		/// </summary>
 		/// <param name="serverPort"></param>
 		/// <param name="clientPort"></param>
-		void Connect(int serverPort, int clientPort);
+		void Connect(int myPort, int remotePort);
 
 		/// <summary>
 		/// Used for accepting the connection on listening socket.
@@ -23,32 +25,49 @@
 		void Accept();
 
 		/// <summary>
-		/// Begins waiting for the connection and accepts it on the acceptedSocket when it is received. Non-blocking.
+		/// Begins waiting for the connection and accepts it on the acceptedSocket when it is received.
 		/// </summary>
 		void BeginAccept();
+
+		/// <summary>
+		/// Asynchronously accept the connection attempt on acceptedSocket.
+		/// </summary>
+		Task AcceptAsync();
 
 		/// <summary>
 		/// Receives data on the client socket.
 		/// </summary>
 		/// <returns></returns>
-		byte[] ReceiveClient();
+		byte[] ReceiveConnectedSocket();
 
 		/// <summary>
 		/// Receives data on the accepted socket.
 		/// </summary>
 		/// <returns></returns>
-		byte[] ReceiveAccepted();
+		byte[] ReceiveAcceptedSocket();
 
+		/// <summary>
+		/// Asynchronous receive on accepted socket.
+		/// </summary>
+		/// <returns></returns>
+		Task<byte[]> ReceiveAcceptedSocketAsync();
+
+		/// <summary>
+		/// Asynchronous receive on connected socket.
+		/// </summary>
+		/// <returns></returns>
+		Task<byte[]> ReceiveConnectedSocketAsync();
+		
 		/// <summary>
 		/// Sends data on the client socket.
 		/// </summary>
 		/// <returns></returns>
-		void SendClient(byte[] data);
+		void SendConnectedSocket(byte[] data);
 
 		/// <summary>
 		/// Sends data on the accepted socket.
 		/// </summary>
 		/// <returns></returns>
-		void SendAccepted(byte[] data);
+		void SendAcceptedSocket(byte[] data);
 	}
 }

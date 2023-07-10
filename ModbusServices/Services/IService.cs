@@ -1,17 +1,19 @@
-﻿namespace ModbusServices.ServiceProviders
+﻿using System.Threading.Tasks;
+
+namespace ModbusServices.ServiceProviders
 {
 	/// <summary>
 	/// Generic specification for the requests made to the Modbus slave.
 	/// </summary>
 	interface IService
 	{
-		ushort[] ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
+		Task<ushort[]> ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
 
-		ushort[] ReadAnalogInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
+		Task<ushort[]> ReadAnalogInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
 
-		bool[] ReadCoil(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
+		Task<bool[]> ReadCoil(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
 
-		bool[] ReadDiscreteInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
+		Task<bool[]> ReadDiscreteInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
 
 		void WriteHolding(byte slaveAddress, ushort startAddress, ushort[] writeValues);
 

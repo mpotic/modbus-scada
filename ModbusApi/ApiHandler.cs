@@ -4,9 +4,9 @@ using ModbusServices.Services;
 
 namespace ModbusApi
 {
-	public class ModbusApiHandler : IModbusApiHandler
+	public class ApiHandler : IApiHandler
 	{
-		public ModbusApiHandler(IReadResultsViewModel readResults, IMessageBoxCallback callback)
+		public ApiHandler(IReadResultsViewModel readResults, IMessageBoxCallback callback)
 		{
 			IServiceHandler serviceInitializer = new ServiceHandler();
 

@@ -3,6 +3,7 @@ using Common.ResponseDto;
 using Common.Util;
 using ModbusServices.ResponseDto.Discrete;
 using System;
+using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
@@ -10,21 +11,21 @@ namespace ModbusServices.ServiceProviders
 	{
 		IService service;
 
-		ByteBoolConverter byteConverter = new ByteBoolConverter();
+		ByteArrayConverter byteConverter = new ByteArrayConverter();
 
 		internal void SetService(IService service)
 		{
 			this.service = service;
 		}
 
-		public IDiscreteReadResponse ReadInput(IModbusActionParams actionParams)
+		public async Task<IDiscreteReadResponse> ReadInput(IModbusActionParams actionParams)
 		{
 			IDiscreteReadResponse response;
 
 			try
 			{
-				bool[] boolArray = service.ReadDiscreteInput(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
-				byte[] byteArray = byteConverter.BoolArrayToByteArray(boolArray);
+				bool[] boolArray = await service.ReadDiscreteInput(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
+				byte[] byteArray = byteConverter.ConvertToByteArray(boolArray);
 
 				response = new DiscreteReadResponse(true, byteArray);
 			}
@@ -36,14 +37,14 @@ namespace ModbusServices.ServiceProviders
 			return response;
 		}
 
-		public IDiscreteReadResponse ReadCoil(IModbusActionParams actionParams)
+		public async Task<IDiscreteReadResponse> ReadCoil(IModbusActionParams actionParams)
 		{
 			IDiscreteReadResponse response;
 
 			try
 			{
-				bool[] boolArray = service.ReadCoil(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
-				byte[] byteArray = byteConverter.BoolArrayToByteArray(boolArray);
+				bool[] boolArray = await service.ReadCoil(actionParams.SlaveAddress, actionParams.StartAddress, actionParams.NumberOfPoints);
+				byte[] byteArray = byteConverter.ConvertToByteArray(boolArray);
 
 				response = new DiscreteReadResponse(true, byteArray);
 			}
@@ -61,7 +62,7 @@ namespace ModbusServices.ServiceProviders
 
 			try
 			{
-				bool[] boolArray = byteConverter.ByteArrayToBoolArray(actionParams.CoilWriteValues);
+				bool[] boolArray = byteConverter.ConvertToBoolArray(actionParams.CoilWriteValues);
 				service.WriteCoil(actionParams.SlaveAddress, actionParams.StartAddress, boolArray);
 
 				response = new OperationResponse(true);

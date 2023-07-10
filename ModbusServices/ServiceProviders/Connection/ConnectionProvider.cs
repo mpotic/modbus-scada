@@ -24,18 +24,13 @@ namespace ModbusServices.ServiceProviders
 
 		internal IStandardConnection StandardConnection { get; } = new StandardConnection();
 
-		/// <summary>
-		/// Initialize the modbus services if needed. Initialize the connection to the modbus slave using IModbusMaster.
-		/// </summary>
-		/// <param name="connectionParams">Specifies clients and servers port.</param>
-		/// <returns></returns>
 		public IOperationResponse ModbusConnect(IConnectionParams connectionParams)
 		{
 			SetupModbusServices();
 
 			try
 			{
-				TcpClient client = GetTcpClientConnection(connectionParams.ServerPort, connectionParams.ClientPort);
+				TcpClient client = GetTcpClient(connectionParams.ClientPort);
 				
 				IModbusFactory factory = new ModbusFactory();
 				IModbusMaster connection = factory.CreateMaster(client);
@@ -56,7 +51,7 @@ namespace ModbusServices.ServiceProviders
 
 			try
 			{
-				StandardConnection.Connection.Connect(connectionParams.ServerPort, connectionParams.ClientPort);
+				StandardConnection.Connection.Connect(connectionParams.ClientPort);
 			}
 			catch(Exception e)
 			{
@@ -69,7 +64,7 @@ namespace ModbusServices.ServiceProviders
 		/// <summary>
 		/// Instantiate modbus services if they are not already instantiated.
 		/// </summary>
-		public void SetupModbusServices()
+		private void SetupModbusServices()
 		{
 			if (serviceStatus != ConnectedServiceStatus.Modbus)
 			{
@@ -81,7 +76,7 @@ namespace ModbusServices.ServiceProviders
 		/// <summary>
 		/// Instantiate standard services if they are not already instantiated.
 		/// </summary>
-		public void SetupStandardServices()
+		private void SetupStandardServices()
 		{
 			if (serviceStatus != ConnectedServiceStatus.Standard)
 			{
@@ -90,11 +85,10 @@ namespace ModbusServices.ServiceProviders
 			}
 		}
 
-		private TcpClient GetTcpClientConnection(int serverPort, int clientPort)
+		private TcpClient GetTcpClient(int clientPort)
 		{
 			TcpClient tcpClient = new TcpClient();
 
-			tcpClient.Client.Bind(new IPEndPoint(IPAddress.Loopback, serverPort));
 			tcpClient.Client.Connect(IPAddress.Loopback, clientPort);
 			
 			return tcpClient;

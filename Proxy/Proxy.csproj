@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NModbus, Version=3.0.78.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NModbus.3.0.78\lib\net46\NModbus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,11 +46,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMenu.cs" />
+    <Compile Include="MessageHandling\Handlers\IMessageHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadAnalogInputHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadCoilHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\IModbusRequestHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadDiscreteInputHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadHoldingHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\WriteCoilHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\WriteHoldingHandler.cs" />
+    <Compile Include="MessageHandling\IMessageWorker.cs" />
+    <Compile Include="MessageHandling\MessageWorker.cs" />
+    <Compile Include="MessageHandling\Handlers\ProxyToMasterMessageHandler.cs" />
+    <Compile Include="MessageHandling\Handlers\ProxyToSlaveMessageHandler.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="MessageHandling\Handlers\MasterMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
