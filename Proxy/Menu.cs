@@ -4,13 +4,19 @@ using System.Threading.Tasks;
 
 namespace Proxy
 {
-    internal class Menu
+    internal class Menu : IMenu
     {
         IMessageWorker messageWorker = new MessageWorker();
 
-        public void Begin()
+        public async void Begin()
         {
-            Task.Run(() => messageWorker.AcceptAndStartReceiving());
+           await Task.Run(() => messageWorker.AcceptAndStartReceiving());
+        }
+
+        public async void BeginAndAutoConnect()
+        {
+            await Task.Run(() => messageWorker.AcceptAndStartReceiving());
+            _ = Task.Run(() => messageWorker.AutoConnectAndStartReceiving());
         }
 
         public void ReadInput()
@@ -43,6 +49,10 @@ namespace Proxy
             else if (readLine.StartsWith("exit"))
             {
                 messageWorker.Disconnect();
+
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadLine();
+
                 System.Environment.Exit(0);
             }
         }

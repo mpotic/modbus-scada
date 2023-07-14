@@ -2,7 +2,7 @@
 
 namespace ModbusServices.Connection
 {
-	interface IModbusConnection : IConnection
+	internal interface IModbusConnection : IConnection
 	{
 		IModbusMaster ModbusMaster { get; set; }
 	}

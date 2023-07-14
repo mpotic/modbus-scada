@@ -4,6 +4,6 @@ namespace ModbusServices.Connection
 {
     class StandardConnection : IStandardConnection
 	{
-		public ITcpSocketHandler Connection { get; set; } = new TcpSocketHandler();
+		public ITcpSocketHandler Connection { get; set; }
 	}
 }

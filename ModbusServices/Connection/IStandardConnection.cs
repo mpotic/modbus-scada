@@ -2,7 +2,7 @@
 
 namespace ModbusServices.Connection
 {
-    interface IStandardConnection : IConnection
+    internal interface IStandardConnection : IConnection
 	{
 		ITcpSocketHandler Connection { get; set; }
 	}

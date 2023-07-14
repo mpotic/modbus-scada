@@ -2,9 +2,12 @@
 
 namespace ModbusServices.Services
 {
+	/// <summary>
+	/// Used for dependency injection and service setup.
+	/// </summary>
 	public interface IServiceHandler
 	{
-		IConnectionProvider ConnectionProvider { get; }
+		IConnectionServiceProvider ConnectionProvider { get; }
 
 		IDiscreteServiceProvider DiscreteProvider { get; }
 

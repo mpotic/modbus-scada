@@ -49,7 +49,7 @@
     <Compile Include="Enums\SenderCode.cs" />
     <Compile Include="Connection\ITcpSerializer.cs" />
     <Compile Include="Connection\ITcpSocketHandler.cs" />
-    <Compile Include="Enums\ModbusRequestCode.cs" />
+    <Compile Include="Enums\FunctionCode.cs" />
     <Compile Include="Connection\TcpSerializer.cs" />
     <Compile Include="Connection\TcpSocketHandler.cs" />
     <Compile Include="ModbusStandardMessage\IModbusStandardRequest.cs" />
@@ -59,14 +59,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseDto\IOperationResponse.cs" />
     <Compile Include="ResponseDto\OperationResponse.cs" />
-    <Compile Include="Connection\ITcpHandler.cs" />
     <Compile Include="Util\ByteArrayConverter.cs" />
     <Compile Include="Util\ConnectionHelper.cs" />
     <Compile Include="Util\IByteArrayConverter.cs" />
     <Compile Include="Util\IConnectionHelper.cs" />
     <Compile Include="Util\ResponseValuesFormatter.cs" />
     <Compile Include="Util\IResponseValuesFormatter.cs" />
-    <Compile Include="Connection\TcpHandler.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

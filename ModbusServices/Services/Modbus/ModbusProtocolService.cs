@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
-	internal class ModbusService : IModbusService
+	internal class ModbusProtocolService : IModbusProtocolService
 	{
 		private IModbusConnection connection;
 
-		public ModbusService(IModbusConnection connection)
+		public ModbusProtocolService(IModbusConnection connection)
 		{
 			this.connection = connection;
 		}

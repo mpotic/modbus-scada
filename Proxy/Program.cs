@@ -6,9 +6,9 @@ namespace Proxy
 	{
 		static void Main(string[] args)
 		{
-			Menu menu = new Menu();
+			IMenu menu = new Menu();
 
-			menu.Begin();
+			menu.BeginAndAutoConnect();
 			
 			menu.ReadInput();
 		}

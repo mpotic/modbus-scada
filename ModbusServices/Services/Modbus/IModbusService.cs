@@ -5,7 +5,7 @@ namespace ModbusServices.ServiceProviders
 	/// <summary>
 	/// Generic specification for the requests made to the Modbus slave.
 	/// </summary>
-	interface IService
+	interface IModbusService
 	{
 		Task<ushort[]> ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints);
 

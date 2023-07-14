@@ -1,4 +1,4 @@
-﻿namespace ModbusServices.ServiceProviders
+﻿namespace ModbusServices.Services
 {
 	enum ConnectedServiceStatus
 	{

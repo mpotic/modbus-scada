@@ -26,16 +26,16 @@ namespace Common.Connection
             Message = message;
         }
 
-        public void AddHeader(SenderCode senderCode, ModbusRequestCode requestCode)
+        public void AddHeader(SenderCode senderCode, FunctionCode functionCode)
         {
-            string header = senderCode.ToString() + ";" + requestCode.ToString();
+            string header = senderCode.ToString() + ";" + functionCode.ToString();
             byte[] headerBytes = Encoding.UTF8.GetBytes(header);
             Message = headerBytes.Concat(Message).ToArray();
         }
 
-        public void ReplaceHeader(SenderCode senderCode, ModbusRequestCode requestCode)
+        public void ReplaceHeader(SenderCode senderCode, FunctionCode functionCode)
         {
-            string header = senderCode.ToString() + ";" + requestCode.ToString() + separator;
+            string header = senderCode.ToString() + ";" + functionCode.ToString() + separator;
             byte[] headerBytes = Encoding.UTF8.GetBytes(header);
             string messageString = Encoding.UTF8.GetString(Message);
             string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);
@@ -93,7 +93,7 @@ namespace Common.Connection
             return senderCode;
         }
 
-        public ModbusRequestCode ReadRequestCodeFromHeader()
+        public FunctionCode ReadRequestCodeFromHeader()
         {
             string messageString = Encoding.UTF8.GetString(Message);
             string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);
@@ -104,7 +104,7 @@ namespace Common.Connection
                 throw new Exception("Incorrect message formatting: ModbusRequestCode not found.");
             }
 
-            if (!Enum.TryParse(headerParts[1], out ModbusRequestCode requestCode))
+            if (!Enum.TryParse(headerParts[1], out FunctionCode requestCode))
             {
                 throw new Exception("Incorrect message formatting: Invalid ModbusRequestCode.");
             }

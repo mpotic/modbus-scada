@@ -1,6 +1,4 @@
 ﻿using Common.Enums;
-using System.Linq;
-using System.Text;
 
 namespace Common.Connection
 {
@@ -21,12 +19,12 @@ namespace Common.Connection
         /// <summary>
         /// Replaces the existing header with given sender code and request code.
         /// </summary>
-        void ReplaceHeader(SenderCode senderCode, ModbusRequestCode requestCode);
+        void ReplaceHeader(SenderCode senderCode, FunctionCode requestCode);
 
         /// <summary>
         /// Adds the header to the message.
         /// </summary>
-        void AddHeader(SenderCode senderCode, ModbusRequestCode requestCode);
+        void AddHeader(SenderCode senderCode, FunctionCode requestCode);
 
         /// <summary>
         /// Adds body with slave address, start address, and number of points.
@@ -61,7 +59,7 @@ namespace Common.Connection
         /// <summary>
         /// Reads ModbusRequestCode from the message header.
         /// </summary>
-        ModbusRequestCode ReadRequestCodeFromHeader();
+        FunctionCode ReadRequestCodeFromHeader();
 
         /// <summary>
         /// Reads SlaveAddress from the message body.

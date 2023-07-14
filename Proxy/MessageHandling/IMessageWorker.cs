@@ -5,6 +5,8 @@
 		void AcceptAndStartReceiving();
 
         void ConnectAndStartReceiving(int remotePort);
+
+        void AutoConnectAndStartReceiving();
         
         void Disconnect();
     }

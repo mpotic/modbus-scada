@@ -4,6 +4,8 @@ namespace Common.Connection
 {
     public interface ITcpSocketHandler
     {
+        bool IsConnected { get; }
+
         void Listen(int port);
 
         Task AcceptAsync();
@@ -13,6 +15,8 @@ namespace Common.Connection
         Task<byte[]> ReceiveAsync();
 
         void Send(byte[] message);
+
+        Task<int> SendAsync(byte[] message);
 
         void CloseWorkingSocket();
 

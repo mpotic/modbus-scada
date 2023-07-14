@@ -1,28 +1,28 @@
 ﻿using Common.ActionDto;
+using Common.Connection;
 using Common.ResponseDto;
 using ModbusServices.Connection;
-using ModbusServices.Services;
 using NModbus;
 using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace ModbusServices.ServiceProviders
+namespace ModbusServices.Services
 {
-	public class ConnectionProvider : IConnectionProvider
+    internal class ConnectionService : IConnectionService
 	{
 		private ConnectedServiceStatus serviceStatus = ConnectedServiceStatus.None;
 
 		private IServiceHandler serviceHandler;
 
-		public ConnectionProvider(IServiceHandler serviceHandler)
+		public ConnectionService(IServiceHandler serviceHandler)
 		{
 			this.serviceHandler = serviceHandler;
 		}
 
-		internal IModbusConnection ModbusConnection { get; } = new ModbusConnection();
+		public IModbusConnection ModbusConnection { get; } = new ModbusConnection();
 
-		internal IStandardConnection StandardConnection { get; } = new StandardConnection();
+		public IStandardConnection StandardConnection { get; } = new StandardConnection();
 
 		public IOperationResponse ModbusConnect(IConnectionParams connectionParams)
 		{
@@ -51,6 +51,7 @@ namespace ModbusServices.ServiceProviders
 
 			try
 			{
+				StandardConnection.Connection = new TcpSocketHandler();
 				StandardConnection.Connection.Connect(connectionParams.ClientPort);
 			}
 			catch(Exception e)

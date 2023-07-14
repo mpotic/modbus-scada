@@ -8,9 +8,9 @@ namespace ModbusServices.ServiceProviders
 {
 	public class AnalogServiceProvider : IAnalogServiceProvider
 	{
-		IService service;
+		IModbusService service;
 
-		internal void SetService(IService service)
+		internal void SetService(IModbusService service)
 		{
 			this.service = service;
 		}

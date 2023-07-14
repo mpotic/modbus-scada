@@ -5,6 +5,7 @@
 		Master = 0,
 		ProxyToMaster,
 		ProxyToSlave,
+		CloseConnection,
 		Unknown
 	}
 }

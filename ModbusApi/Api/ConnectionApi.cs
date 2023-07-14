@@ -6,11 +6,11 @@ namespace ModbusApi.Api
 {
 	public class ConnectionApi : IConnectionApi
 	{
-		readonly IConnectionProvider connectionService;
+		readonly IConnectionServiceProvider connectionService;
 
 		readonly IMessageBoxCallback messageBoxCallback;
 		
-		public ConnectionApi(IConnectionProvider connectionService, IMessageBoxCallback messageBoxCallback)
+		public ConnectionApi(IConnectionServiceProvider connectionService, IMessageBoxCallback messageBoxCallback)
 		{
 			this.connectionService = connectionService;
 			this.messageBoxCallback = messageBoxCallback;

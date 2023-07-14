@@ -10,7 +10,7 @@ namespace Proxy.MessageHandling
 {
     class ProxyToSlaveMessageHandler : IMessageHandler
 	{
-		private readonly Dictionary<ModbusRequestCode, IModbusRequestHandler> requestHandling;
+		private readonly Dictionary<FunctionCode, IModbusRequestHandler> requestHandling;
 
         private readonly int slavePort = 502;
 
@@ -25,21 +25,21 @@ namespace Proxy.MessageHandling
 			this.serializer = serializer;
             proxySocket = socket;
 
-            requestHandling = new Dictionary<ModbusRequestCode, IModbusRequestHandler>
+            requestHandling = new Dictionary<FunctionCode, IModbusRequestHandler>
             {
-                { ModbusRequestCode.ReadCoil, new ReadCoilHandler(serializer, proxySocket) },
-                { ModbusRequestCode.ReadHolding, new ReadHoldingHandler(serializer, proxySocket) },
-                { ModbusRequestCode.ReadDiscreteInput, new ReadDiscreteInputHandler(serializer, proxySocket) },
-                { ModbusRequestCode.ReadAnalogInput, new ReadAnalogInputHandler(serializer, proxySocket) },
-                { ModbusRequestCode.WriteCoil, new WriteCoilHandler(serializer) },
-                { ModbusRequestCode.WriteHolding, new WriteHoldingHandler(serializer) }
+                { FunctionCode.ReadCoils, new ReadCoilHandler(serializer, proxySocket) },
+                { FunctionCode.ReadHolding, new ReadHoldingHandler(serializer, proxySocket) },
+                { FunctionCode.ReadDiscreteInputs, new ReadDiscreteInputHandler(serializer, proxySocket) },
+                { FunctionCode.ReadAnalogInputs, new ReadAnalogInputHandler(serializer, proxySocket) },
+                { FunctionCode.WriteCoils, new WriteCoilHandler(serializer) },
+                { FunctionCode.WriteHolding, new WriteHoldingHandler(serializer) }
             };
         }
 
         public void Process()
 		{
             CheckModbusSlaveConnection();
-            ModbusRequestCode requestCode = serializer.ReadRequestCodeFromHeader();
+            FunctionCode requestCode = serializer.ReadRequestCodeFromHeader();
             requestHandling[requestCode].Process(slave);
         }
 

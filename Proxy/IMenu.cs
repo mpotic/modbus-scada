@@ -4,6 +4,8 @@
 	{
 		void Begin();
 
-		void Connect();
+		void BeginAndAutoConnect();
+
+		void ReadInput();
 	}
 }

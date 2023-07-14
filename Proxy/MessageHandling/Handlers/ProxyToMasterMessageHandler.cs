@@ -1,6 +1,4 @@
 ﻿using Common.Connection;
-using Common.Enums;
-using System;
 
 namespace Proxy.MessageHandling
 {

@@ -29,7 +29,7 @@ namespace Proxy.MessageHandling.Handlers.ModbusRequestHandlers
         private void SendResponse(bool[] values)
         {
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.ProxyToMaster, ModbusRequestCode.ReadCoil);
+            serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadCoils);
             serializer.AddBody(values);
             proxySocket.Send(serializer.Message);
         }

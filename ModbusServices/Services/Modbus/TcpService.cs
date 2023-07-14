@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
-    internal class StandardService : IStandardService
+    internal class TcpService : ITcpService
 	{
 		private readonly IStandardConnection connection;
 
@@ -14,7 +14,7 @@ namespace ModbusServices.ServiceProviders
 
 		private readonly IByteArrayConverter byteArrayConverter = new ByteArrayConverter();
 
-		public StandardService(IStandardConnection connection)
+		public TcpService(IStandardConnection connection)
 		{
 			this.connection = connection;
 		}
@@ -22,7 +22,7 @@ namespace ModbusServices.ServiceProviders
 		public async Task<ushort[]> ReadAnalogInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
 		{
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.ReadAnalogInput);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.ReadAnalogInputs);
             serializer.AddBody(slaveAddress, startAddress, numberOfPoints);
 			connection.Connection.Send(serializer.Message);
 
@@ -36,7 +36,7 @@ namespace ModbusServices.ServiceProviders
         public async Task<ushort[]> ReadHolding(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
         {
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.ReadHolding);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.ReadHolding);
             serializer.AddBody(slaveAddress, startAddress, numberOfPoints);
             connection.Connection.Send(serializer.Message);
 
@@ -51,7 +51,7 @@ namespace ModbusServices.ServiceProviders
         {
 
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.ReadCoil);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.ReadCoils);
             serializer.AddBody(slaveAddress, startAddress, numberOfPoints);
             connection.Connection.Send(serializer.Message);
 
@@ -65,7 +65,7 @@ namespace ModbusServices.ServiceProviders
         public async Task<bool[]> ReadDiscreteInput(byte slaveAddress, ushort startAddress, ushort numberOfPoints)
         {
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.ReadDiscreteInput);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.ReadDiscreteInputs);
             serializer.AddBody(slaveAddress, startAddress, numberOfPoints);
             connection.Connection.Send(serializer.Message);
 
@@ -79,7 +79,7 @@ namespace ModbusServices.ServiceProviders
 		public void WriteCoil(byte slaveAddress, ushort startAddress, bool[] writeValues)
         {
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.WriteCoil);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.WriteCoils);
             serializer.AddBody(slaveAddress, startAddress, writeValues);
             connection.Connection.Send(serializer.Message);
         }
@@ -87,7 +87,7 @@ namespace ModbusServices.ServiceProviders
 		public void WriteHolding(byte slaveAddress, ushort startAddress, ushort[] writeValues)
         {
             serializer.InitMessage();
-            serializer.AddHeader(SenderCode.Master, ModbusRequestCode.WriteHolding);
+            serializer.AddHeader(SenderCode.Master, FunctionCode.WriteHolding);
             serializer.AddBody(slaveAddress, startAddress, writeValues);
             connection.Connection.Send(serializer.Message);
         }

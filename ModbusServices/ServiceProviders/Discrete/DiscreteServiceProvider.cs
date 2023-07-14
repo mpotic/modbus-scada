@@ -9,11 +9,11 @@ namespace ModbusServices.ServiceProviders
 {
 	public class DiscreteServiceProvider : IDiscreteServiceProvider
 	{
-		IService service;
+		IModbusService service;
 
 		ByteArrayConverter byteConverter = new ByteArrayConverter();
 
-		internal void SetService(IService service)
+		internal void SetService(IModbusService service)
 		{
 			this.service = service;
 		}
