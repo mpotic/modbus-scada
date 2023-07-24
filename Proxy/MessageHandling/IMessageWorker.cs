@@ -2,7 +2,7 @@
 {
     internal interface IMessageWorker
 	{
-		void AcceptAndStartReceiving();
+		void ListenAcceptAndStartReceiving();
 
         void ConnectAndStartReceiving(int remotePort);
 

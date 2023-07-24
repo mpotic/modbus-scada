@@ -1,4 +1,4 @@
-﻿namespace Common.ActionDto
+﻿namespace Common.ParamsDto
 {
 	/// <summary>
 	/// Universal group of parameters to send aong when requesting a modbus service action.

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Common.Connection
 {
-    public class TcpSerializer : ITcpSerializer
+	public class TcpSerializer : ITcpSerializer
     {
         public const string separator = "//";
 
@@ -35,7 +35,7 @@ namespace Common.Connection
 
         public void ReplaceHeader(SenderCode senderCode, FunctionCode functionCode)
         {
-            string header = senderCode.ToString() + ";" + functionCode.ToString() + separator;
+            string header = senderCode.ToString() + ";" + functionCode + separator;
             byte[] headerBytes = Encoding.UTF8.GetBytes(header);
             string messageString = Encoding.UTF8.GetString(Message);
             string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);
@@ -93,7 +93,7 @@ namespace Common.Connection
             return senderCode;
         }
 
-        public FunctionCode ReadRequestCodeFromHeader()
+        public FunctionCode ReadFunctionCodeFromHeader()
         {
             string messageString = Encoding.UTF8.GetString(Message);
             string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);

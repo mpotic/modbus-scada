@@ -39,7 +39,7 @@ namespace Proxy.MessageHandling
         public void Process()
 		{
             CheckModbusSlaveConnection();
-            FunctionCode requestCode = serializer.ReadRequestCodeFromHeader();
+            FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
             requestHandling[requestCode].Process(slave);
         }
 

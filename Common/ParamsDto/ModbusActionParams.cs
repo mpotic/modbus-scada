@@ -1,4 +1,4 @@
-﻿namespace Common.ActionDto
+﻿namespace Common.ParamsDto
 {
 	public class ModbusActionParams : IModbusActionParams
 	{

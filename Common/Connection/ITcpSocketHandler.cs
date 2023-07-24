@@ -10,15 +10,15 @@ namespace Common.Connection
 
         Task AcceptAsync();
 
-        void Connect(int remotePort);
-        
-        Task<byte[]> ReceiveAsync();
+        Task ConnectAsync(int remotePort);
+
+        Task ConnectAsync(int remotePort, int localPort);
+
+		Task<byte[]> ReceiveAsync();
 
         void Send(byte[] message);
 
-        Task<int> SendAsync(byte[] message);
-
-        void CloseWorkingSocket();
+        void CloseAndUnbindWorkingSocket();
 
         void CloseListening();
     }

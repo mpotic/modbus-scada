@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 
 namespace ModbusApi.Api
 {
@@ -7,5 +7,7 @@ namespace ModbusApi.Api
 		void ModbusConnect(IConnectionParams connectionParams);
 
 		void StandardConnect(IConnectionParams connectionParams);
+
+		void Disconnect();
 	}
 }

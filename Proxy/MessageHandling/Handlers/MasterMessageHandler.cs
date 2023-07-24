@@ -17,7 +17,7 @@ namespace Proxy.MessageHandling
 
         public void Process()
         {
-            FunctionCode requestCode = serializer.ReadRequestCodeFromHeader();
+            FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
             serializer.ReplaceHeader(SenderCode.ProxyToSlave, requestCode);
             proxySocket.Send(serializer.Message);
         }

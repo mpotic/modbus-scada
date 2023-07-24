@@ -4,6 +4,8 @@
 	{
 		void DisplayError(string message);
 
-		void DisplaySuccess(string message);
+		void DisplayInformation(string message);
+
+		void DisplayWarning(string message);
 	}
 }

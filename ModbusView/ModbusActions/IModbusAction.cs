@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 
 namespace ModbusView.ModbusActions
 {

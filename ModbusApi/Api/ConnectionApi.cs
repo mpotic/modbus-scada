@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 using Common.ResponseDto;
 using ModbusServices.ServiceProviders;
 
@@ -23,23 +23,39 @@ namespace ModbusApi.Api
 			if (!response.IsSuccessfull)
 			{
 				messageBoxCallback.DisplayError(response.Message);
+
 				return;
 			}
 
-			messageBoxCallback.DisplaySuccess(string.IsNullOrWhiteSpace(response.Message) ? "Modbus connection established!" : response.Message);
+			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.Message) ? "Modbus connection established!" : response.Message);
 		}
 
-		public void StandardConnect(IConnectionParams connectionParams)
+		public async void StandardConnect(IConnectionParams connectionParams)
 		{
-			IOperationResponse response = connectionService.StandardConnect(connectionParams);
+			IOperationResponse response = await connectionService.StandardConnect(connectionParams);
 
 			if (!response.IsSuccessfull)
 			{
 				messageBoxCallback.DisplayError(response.Message);
+
 				return;
 			}
 
-			messageBoxCallback.DisplaySuccess(string.IsNullOrWhiteSpace(response.Message) ? "Standard connection established!" : response.Message);
+			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.Message) ? "Standard connection established!" : response.Message);
+		}
+
+		public void Disconnect()
+		{
+			IOperationResponse response = connectionService.Disconnect();
+
+			if (!response.IsSuccessfull)
+			{
+				messageBoxCallback.DisplayWarning(response.Message);
+
+				return;
+			}
+
+			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.Message) ? "Disconnected!" : response.Message);
 		}
 	}
 }

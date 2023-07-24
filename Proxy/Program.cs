@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Proxy
+﻿namespace Proxy
 {
-    class Program
+	class Program
 	{
 		static void Main(string[] args)
 		{
@@ -10,7 +8,7 @@ namespace Proxy
 
 			menu.BeginAndAutoConnect();
 			
-			menu.ReadInput();
+			menu.ReadUserInput();
 		}
 	}
 }

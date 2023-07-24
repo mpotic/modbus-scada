@@ -9,6 +9,7 @@
 		WriteCoils,
 		WriteHolding,
 		ModbusConnect,
-		StandardConnect
+		StandardConnect,
+		Disconnect
 	}
 }

@@ -2,7 +2,13 @@
 
 namespace Common.Connection
 {
-    public interface ITcpSerializer
+	/// <summary>
+	/// Used for interpreting the packet that represents a request for the modbus slave.
+	/// The packet is structured as one of the following: 
+	///     write request: "SenderCode;FunctionCode//SlaveAddress;StartAddress;NumberOfPoints",
+	///     read request: "SenderCode;FunctionCode//SlaveAddress;StartAddress;WriteValues".
+	/// </summary>
+	public interface ITcpSerializer
     {
         byte[] Message { get; }
 
@@ -59,7 +65,7 @@ namespace Common.Connection
         /// <summary>
         /// Reads ModbusRequestCode from the message header.
         /// </summary>
-        FunctionCode ReadRequestCodeFromHeader();
+        FunctionCode ReadFunctionCodeFromHeader();
 
         /// <summary>
         /// Reads SlaveAddress from the message body.

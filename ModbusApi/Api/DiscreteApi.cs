@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 using Common.ResponseDto;
 using Common.Util;
 using ModbusApi.ViewModel;

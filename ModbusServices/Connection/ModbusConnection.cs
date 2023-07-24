@@ -1,9 +1,12 @@
 ﻿using NModbus;
+using System.Net.Sockets;
 
 namespace ModbusServices.Connection
 {
-	class ModbusConnection : IModbusConnection
+	internal class ModbusConnection : IModbusConnection
 	{
 		public IModbusMaster ModbusMaster { get; set; }
+
+		public TcpClient ClientConnection { get; set; }
 	}
 }

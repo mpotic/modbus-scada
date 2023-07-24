@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 using Common.ResponseDto;
 using ModbusServices.ResponseDto.Analog;
 using System;

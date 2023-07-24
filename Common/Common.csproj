@@ -41,11 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionDto\ConnectionParams.cs" />
-    <Compile Include="ActionDto\IConnectionParams.cs" />
-    <Compile Include="ActionDto\IModbusActionParams.cs" />
-    <Compile Include="ActionDto\IModbusParams.cs" />
-    <Compile Include="ActionDto\ModbusActionParams.cs" />
+    <Compile Include="ParamsDto\ConnectionParams.cs" />
+    <Compile Include="ParamsDto\IConnectionParams.cs" />
+    <Compile Include="ParamsDto\IModbusActionParams.cs" />
+    <Compile Include="ParamsDto\IModbusParams.cs" />
+    <Compile Include="ParamsDto\ModbusActionParams.cs" />
     <Compile Include="Enums\SenderCode.cs" />
     <Compile Include="Connection\ITcpSerializer.cs" />
     <Compile Include="Connection\ITcpSocketHandler.cs" />

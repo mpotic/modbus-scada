@@ -1,4 +1,4 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 using ModbusApi.Api;
 using ModbusView.ModbusActions;
 using ModbusView.Util;

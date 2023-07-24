@@ -6,175 +6,295 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Proxy.MessageHandling
 {
-    internal class MessageWorker : IMessageWorker
-    {
-        private int listenPort = 21001;
+	internal class MessageWorker : IMessageWorker
+	{
+		int listenPort = 21001;
 
-        private int autoConnectPort = 21001;
+		int localConnectPort = 22001;
 
-        private int allowedAttempts = 3;
+		bool isListening = false;
 
-        readonly ITcpSocketHandler acceptSocket = new TcpSocketHandler();
+		readonly int autoConnectRemotePort = 21001;
 
-        readonly ITcpSocketHandler connectSocket = new TcpSocketHandler();
+		readonly int allowedAttempts = 3;
 
-        readonly ITcpSerializer serializer = new TcpSerializer();
+		readonly ITcpSocketHandler acceptSocket = new TcpSocketHandler();
 
-        IConnectionHelper connectionHelper = new ConnectionHelper();
+		readonly ITcpSocketHandler connectSocket = new TcpSocketHandler();
 
-        readonly Dictionary<SenderCode, IMessageHandler> messageHandling;
+		readonly ITcpSerializer serializer = new TcpSerializer();
 
-        public MessageWorker()
-        {
-            messageHandling = new Dictionary<SenderCode, IMessageHandler>
-            {
-                { SenderCode.Master, new MasterMessageHandler(serializer, connectSocket) },
-                { SenderCode.ProxyToMaster, new ProxyToMasterMessageHandler(serializer, acceptSocket) },
-                { SenderCode.ProxyToSlave, new ProxyToSlaveMessageHandler(serializer, acceptSocket) },
-            };
-        }
+		readonly IConnectionHelper connectionHelper = new ConnectionHelper();
 
-        public async void AcceptAndStartReceiving()
-        {
-            if (!connectionHelper.IsPortAvailable(listenPort))
-            {
-                listenPort--;
+		readonly Dictionary<SenderCode, IMessageHandler> messageHandling;
+
+		public MessageWorker()
+		{
+			messageHandling = new Dictionary<SenderCode, IMessageHandler>
+			{
+				{ SenderCode.Master, new MasterMessageHandler(serializer, connectSocket) },
+				{ SenderCode.ProxyToMaster, new ProxyToMasterMessageHandler(serializer, acceptSocket) },
+				{ SenderCode.ProxyToSlave, new ProxyToSlaveMessageHandler(serializer, acceptSocket) },
+			};
+
+			if (!connectionHelper.IsPortAvailable(listenPort))
+			{
+				listenPort--;
+				localConnectPort--;
+			}
+		}
+
+		public async void ListenAcceptAndStartReceiving()
+		{
+			if (!StartListening())
+			{
+				return;
+			}
+
+			if (!await AcceptConnection())
+			{
+				return;
+			}
+
+			StartReceiving(acceptSocket);
+		}
+
+		private bool StartListening()
+		{
+			if (isListening)
+			{
+				Console.WriteLine("Already listening!");
+
+				return false;
+			}
+
+			acceptSocket.Listen(listenPort);
+			Console.WriteLine($"Listening on port {listenPort}...");
+			isListening = true;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Accepts a socket and stops listening.
+		/// </summary>
+		private async Task<bool> AcceptConnection()
+		{
+			try
+			{
+				await acceptSocket.AcceptAsync();
+			}
+			catch (SocketException ex) when (ex.SocketErrorCode == SocketError.OperationAborted || ex.SocketErrorCode == SocketError.Shutdown)
+			{
+				Console.WriteLine("Accepting socket closed.");
+				acceptSocket.CloseListening();
+				isListening = false;
+
+				return false;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				acceptSocket.CloseListening();
+				isListening = false;
+
+				return false;
+			}
+
+			Console.WriteLine("Connection accepted.");
+			acceptSocket.CloseListening();
+			isListening = false;
+
+			return true;
+		}
+
+		public void ConnectAndStartReceiving(int remotePort)
+		{
+			DisconnectConnectSocket();
+
+			try
+			{
+				connectSocket.ConnectAsync(remotePort, localConnectPort);
+			}
+			catch(Exception e) 
+			{
+                Console.WriteLine(e.Message);
+
+				return;
             }
 
-            acceptSocket.Listen(listenPort);
-            Console.WriteLine($"Listening on port {listenPort}...");
-            await acceptSocket.AcceptAsync();
-            Console.WriteLine("Connection accepted...");
-            StartReceiving(acceptSocket);
-        }
+			Console.WriteLine($"Connected to port {remotePort} from {localConnectPort}.");
+			StartReceiving(connectSocket);
+		}
 
-        public void ConnectAndStartReceiving(int remotePort)
-        {
-            connectSocket.Connect(remotePort);
-            Console.WriteLine($"Connected to port {remotePort}...");
-            StartReceiving(connectSocket);
-        }
+		public void Disconnect()
+		{
+			DisconnectAcceptSocket();
+			DisconnectConnectSocket();
+		}
 
-        public async void Disconnect()
-        {
-            if (acceptSocket.IsConnected)
-            {
-                byte[] closeMessage = Encoding.UTF8.GetBytes(SenderCode.CloseConnection.ToString());
-                await acceptSocket.SendAsync(closeMessage);
-                acceptSocket.CloseWorkingSocket();
-            }
+		private void DisconnectAcceptSocket()
+		{
+			if (acceptSocket.IsConnected)
+			{
+				byte[] closeMessage = Encoding.UTF8.GetBytes(SenderCode.CloseConnection.ToString());
+				acceptSocket.Send(closeMessage);
+				acceptSocket.CloseAndUnbindWorkingSocket();
+			}
 
-            if (connectSocket.IsConnected)
-            {
-                byte[] closeMessage = Encoding.UTF8.GetBytes(SenderCode.CloseConnection.ToString());
-                await connectSocket.SendAsync(closeMessage);
-                connectSocket.CloseWorkingSocket();
-            }
+			acceptSocket.CloseListening();
 
-            acceptSocket.CloseListening();
-            connectSocket.CloseListening();
-            
-            Console.WriteLine("Closed connections...");
-        }
+			Console.WriteLine("Disconnected accept socket.");
+		}
 
-        public void AutoConnectAndStartReceiving()
-        {
-            if(listenPort == autoConnectPort)
-            {
-                return;
-            }
+		private void DisconnectConnectSocket()
+		{
+			if (connectSocket.IsConnected)
+			{
+				byte[] closeMessage = Encoding.UTF8.GetBytes(SenderCode.CloseConnection.ToString());
+				connectSocket.Send(closeMessage);
+				connectSocket.CloseAndUnbindWorkingSocket();
+			}
 
-            int attemptCounter = 0;
-            bool repeatAttempt = true;
+			connectSocket.CloseListening();
 
-            while (repeatAttempt)
-            {
-                AttemptConnection(ref attemptCounter, ref repeatAttempt, autoConnectPort);
+			Console.WriteLine("Disconnected connect socket.");
+		}
 
-                if(attemptCounter > allowedAttempts)
-                {
-                    Console.WriteLine("Maximum allowed attempts (" + allowedAttempts + ") reached!");
-                    return;
-                }
-            }
+		/// <summary>
+		/// Automatically try to connect to the other proxy in case port 21001 is taken, because that implies that the other proxy is 
+		/// running on that port.
+		/// </summary>
+		public void AutoConnectAndStartReceiving()
+		{
+			if (listenPort == autoConnectRemotePort)
+			{
+				return;
+			}
 
-            Console.WriteLine($"Connected to port {autoConnectPort}...");
-            StartReceiving(connectSocket);
-        }
+			int attemptCounter = 0;
+			bool repeatAttempt = true;
 
-        private void AttemptConnection(ref int attemptCounter, ref bool repeatAttempt, int port)
-        {
-            try
-            {
-                connectSocket.Connect(port);
-                repeatAttempt = false;
-            }
-            catch (SocketException ex)
-            {
-                bool refusedOrTimeout = ex.SocketErrorCode == SocketError.ConnectionRefused
-                    || ex.SocketErrorCode == SocketError.TimedOut;
+			while (repeatAttempt)
+			{
+				AttemptConnection(ref attemptCounter, ref repeatAttempt, autoConnectRemotePort);
 
-                if (!refusedOrTimeout)
-                {
-                    throw ex;
-                }
+				if (attemptCounter >= allowedAttempts)
+				{
+					Console.WriteLine($"Maximum allowed attempts ({allowedAttempts}) reached!");
+					return;
+				}
+			}
 
-                Console.WriteLine("Attempt num. " + ++attemptCounter + ".");
-            }
-        }
+			Console.WriteLine($"Connected to port {autoConnectRemotePort} from {localConnectPort}.");
+			StartReceiving(connectSocket);
+		}
 
-        private async void StartReceiving(ITcpSocketHandler socket)
-        {
-            while (true)
-            {
-                byte[] receivedMessage = await socket.ReceiveAsync();
+		/// <summary>
+		/// Make a single connection attempt to the given port. Sets repeatAttempt to false if connection has been made.
+		/// Increases the attemptCounter.
+		/// </summary>
+		private void AttemptConnection(ref int attemptCounter, ref bool repeatAttempt, int port)
+		{
+			try
+			{
+				connectSocket.ConnectAsync(port, localConnectPort);
+				repeatAttempt = false;
+			}
+			catch (SocketException ex)
+			{
+				bool refusedOrTimeout = ex.SocketErrorCode == SocketError.ConnectionRefused
+					|| ex.SocketErrorCode == SocketError.TimedOut;
 
-                if (IsConnectionClosingReceived(receivedMessage))
-                {
-                    socket.CloseWorkingSocket();
-                    socket.CloseListening();
-                    Console.WriteLine("Connection terminated...");
-                    break;
-                }
+				if (!refusedOrTimeout)
+				{
+					throw ex;
+				}
 
-                try
-                {
-                    ProcessMessage(receivedMessage);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-        }
+				++attemptCounter;
+				Console.WriteLine($"Maximum allowed attempts ({attemptCounter}) reached!");
+			}
+		}
 
-        private void ProcessMessage(byte[] streamMessage)
-        {
-            serializer.InitMessage(streamMessage);
-            SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
+		/// <summary>
+		/// Starts receiving messages on a given socket handler until the socket is closed or the connection closing message is received.
+		/// </summary>
+		private async void StartReceiving(ITcpSocketHandler socket)
+		{
+			byte[] receivedMessage = null;
 
-            if (messageHandling.TryGetValue(senderCode, out IMessageHandler handler))
-            {
-                Console.WriteLine("Received: " + senderCode.ToString() + "\nProcessing...");
-                handler.Process();
-            }
-        }
+			while (true)
+			{
+				try
+				{
+					receivedMessage = await socket.ReceiveAsync();
+					ProcessMessage(receivedMessage);
+				}
+				catch (SocketException ex) when (ex.SocketErrorCode == SocketError.OperationAborted || ex.SocketErrorCode == SocketError.Shutdown)
+				{
+					Console.WriteLine("Receiving socket closed.");
+					socket.CloseAndUnbindWorkingSocket();
+					socket.CloseListening();
 
-        private bool IsConnectionClosingReceived(byte[] streamMessage)
-        {
-            streamMessage = streamMessage.Where(x => x != 0).ToArray();
-            string message = Encoding.UTF8.GetString(streamMessage);
-            bool isSenderCodeCloseConnection = Enum.TryParse(message, out SenderCode senderCode) && senderCode == SenderCode.CloseConnection;
+					break;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+					socket.CloseAndUnbindWorkingSocket();
+					socket.CloseListening();
 
-            if (isSenderCodeCloseConnection)
-            {
-                return true;
-            }
+					break;
+				}
 
-            return false;
-        }
-    }
+				if (IsConnectionClosingReceived(receivedMessage))
+				{
+					socket.CloseAndUnbindWorkingSocket();
+					socket.CloseListening();
+					Console.WriteLine("Connection terminated...");
+
+					break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Processes the message based on the SenderCode from header.
+		/// </summary>
+		private void ProcessMessage(byte[] streamMessage)
+		{
+			serializer.InitMessage(streamMessage);
+			SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
+
+			if (messageHandling.TryGetValue(senderCode, out IMessageHandler handler))
+			{
+				Console.WriteLine("Received " + senderCode.ToString());
+				handler.Process();
+				Console.WriteLine("Processed " + senderCode.ToString());
+			}
+		}
+
+		private bool IsConnectionClosingReceived(byte[] streamMessage)
+		{
+			if (streamMessage == null)
+			{
+				return false;
+			}
+
+			streamMessage = streamMessage.Where(x => x != 0).ToArray();
+			string message = Encoding.UTF8.GetString(streamMessage);
+			bool isSenderCodeCloseConnection = Enum.TryParse(message, out SenderCode senderCode) && senderCode == SenderCode.CloseConnection;
+
+			if (isSenderCodeCloseConnection)
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
 }

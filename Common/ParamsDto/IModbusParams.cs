@@ -1,4 +1,4 @@
-﻿namespace Common.ActionDto
+﻿namespace Common.ParamsDto
 {
 	/// <summary>
 	/// Used for holding all the request parameters when calling the service.

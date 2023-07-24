@@ -1,6 +1,7 @@
-﻿using Common.ActionDto;
+﻿using Common.ParamsDto;
 using Common.ResponseDto;
 using ModbusServices.Services;
+using System.Threading.Tasks;
 
 namespace ModbusServices.ServiceProviders
 {
@@ -13,14 +14,19 @@ namespace ModbusServices.ServiceProviders
             this.connectionService = connectionService;
         }
             
-        public IOperationResponse StandardConnect(IConnectionParams connectionParams)
+        public async Task<IOperationResponse> StandardConnect(IConnectionParams connectionParams)
         {
-            return connectionService.StandardConnect(connectionParams);
+            return await connectionService.StandardConnect(connectionParams);
         }
 
         public IOperationResponse ModbusConnect(IConnectionParams connectionParams)
         {
             return connectionService.ModbusConnect(connectionParams);
+        }
+
+        public IOperationResponse Disconnect()
+        {
+            return connectionService.Disconnect();
         }
     }
 }
