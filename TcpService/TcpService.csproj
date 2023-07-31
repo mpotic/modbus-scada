@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A517BF8F-15ED-4FC6-9632-99E0283ECAFC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TcpService</RootNamespace>
+    <AssemblyName>TcpService</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Api\CommunicationApi.cs" />
+    <Compile Include="Api\ConnectionApi.cs" />
+    <Compile Include="Api\Interface\ICommunicationApi.cs" />
+    <Compile Include="Api\Interface\IConnectionApi.cs" />
+    <Compile Include="Connection\ConnectionHandle.cs" />
+    <Compile Include="Connection\ConnectionStatus.cs" />
+    <Compile Include="Connection\Interfaces\IConnectionHandle.cs" />
+    <Compile Include="Connection\Interfaces\IConnectionStatus.cs" />
+    <Compile Include="Connection\Interfaces\IConnectionStatusCallback.cs" />
+    <Compile Include="Enums\ConnectionStatusCode.cs" />
+    <Compile Include="ITcpServiceHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RtuAccess\ISocketAccess.cs" />
+    <Compile Include="RtuAccess\States\ConnectedState.cs" />
+    <Compile Include="RtuAccess\States\ConnectingState.cs" />
+    <Compile Include="RtuAccess\States\DisconnectedState.cs" />
+    <Compile Include="RtuAccess\States\Factory\IStateFactory.cs" />
+    <Compile Include="RtuAccess\States\Factory\StateFactory.cs" />
+    <Compile Include="RtuAccess\States\IState.cs" />
+    <Compile Include="RtuAccess\SocketAccess.cs" />
+    <Compile Include="RtuAccess\States\ListeningState.cs" />
+    <Compile Include="Services\CommunicationService.cs" />
+    <Compile Include="Services\ConnectionService.cs" />
+    <Compile Include="Services\Interface\ICommunicationService.cs" />
+    <Compile Include="Services\Interface\IConnectionService.cs" />
+    <Compile Include="TcpServiceHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{DFB265A0-9FDF-4BA5-B05D-E7221A629165}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
