@@ -1,6 +1,7 @@
-﻿namespace TcpService
+﻿using Common.Enums;
+namespace TcpService
 {
-	public class TcpServiceHandler
+	public class TcpServiceHandler : ITcpServiceHandler
 	{
 		public TcpServiceHandler()
 		{

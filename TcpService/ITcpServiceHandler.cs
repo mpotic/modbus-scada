@@ -1,6 +1,9 @@
 ﻿namespace TcpService
 {
-	internal interface ITcpServiceHandler
+	public interface ITcpServiceHandler
 	{
+		ICommunicationApi CommunicationApi { get; }
+
+		IConnectionApi ConnectionApi { get; }
 	}
 }

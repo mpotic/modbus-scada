@@ -5,7 +5,7 @@ namespace ModbusService
 {
 	internal interface IState
 	{
-		Task<IResponse> Connenct(IConnectionParams connectionParams);
+		Task<IResponse> Connect(IConnectionParams connectionParams);
 
 		IResponse Disconnect();
 

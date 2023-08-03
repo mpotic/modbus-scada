@@ -1,4 +1,7 @@
-﻿namespace TcpService
+﻿using Common.Callback;
+using Common.Enums;
+
+namespace TcpService
 {
 	internal interface IConnectionStatus
 	{

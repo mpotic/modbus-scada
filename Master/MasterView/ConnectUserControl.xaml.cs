@@ -1,11 +1,12 @@
 ﻿using MasterApi.Api;
 using Common.Enums;
-using MasterView.ModbusActions;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Common.DTO;
+using MasterView.Actions;
+using MasterView.Callback;
 
 namespace MasterView
 {
@@ -14,34 +15,33 @@ namespace MasterView
 	/// </summary>
 	public partial class ConnectUserControl : UserControl
 	{
-		private readonly Dictionary<ActionCode, IConnectionAction> actionMap = new Dictionary<ActionCode, IConnectionAction>();
-
-		private readonly IConnectionApi connectionApi;
+		private readonly Dictionary<ActionCode, IConnectionAction> actions;
 		
 		public ConnectUserControl(IConnectionApi connectionApi)
 		{
 			InitializeComponent();
 
-			actionMap.Add(ActionCode.ModbusConnect, new ModbusConnectAction(connectionApi));
-			actionMap.Add(ActionCode.StandardConnect, new StandardConnectAction(connectionApi));
-			this.connectionApi = connectionApi;
+			actions = new Dictionary<ActionCode, IConnectionAction>()
+			{
+				{ ActionCode.Connect, new ConnectAction(connectionApi) },
+				{ ActionCode.Disconnect, new DisconnectAction(connectionApi)}
+			};
+			ConnectionStateCallback modbusCallback = new ConnectionStateCallback(ModbusStatusTextBlock, ModbusStatusEllipse);
+			ConnectionStateCallback tcpCallback = new ConnectionStateCallback(TcpStatusTextBlock, TcpStatusEllipse);
+			connectionApi.RegisterConnectionStatusCallback(modbusCallback, ServiceTypeCode.ModbusService);
+			connectionApi.RegisterConnectionStatusCallback(tcpCallback, ServiceTypeCode.TcpService);
 		}
 
 		private void ModbusConnectButton_Click(object sender, RoutedEventArgs e)
 		{
-			int clientPort;
-			int hostPort;
-			IConnectionParams connectionParams;
-
 			try
 			{
-				clientPort = int.Parse(ModbusClientPort.Text);
-				hostPort = int.Parse(ModbusHostPort.Text);
+				int clientPort = int.Parse(ModbusClientPort.Text);
+				int hostPort = int.Parse(ModbusHostPort.Text);
 
-				connectionParams = new ConnectionParams(clientPort, hostPort);
-
-				actionMap[ActionCode.ModbusConnect].SetParams(connectionParams);
-				actionMap[ActionCode.ModbusConnect].Execute();
+				IConnectionParams connectionParams = new ConnectionParams(clientPort, hostPort);
+				actions[ActionCode.Connect].SetParams(connectionParams);
+				actions[ActionCode.Connect].Execute();
 			}
 			catch (Exception exception)
 			{
@@ -49,7 +49,7 @@ namespace MasterView
 			}
 		}
 
-		private void StandardConnectButton_Click(object sender, RoutedEventArgs e)
+		private void TcpConnectButton_Click(object sender, RoutedEventArgs e)
 		{
 			int clientPort;
 			int hostPort;
@@ -62,8 +62,8 @@ namespace MasterView
 
 				connectionParams = new ConnectionParams(clientPort, hostPort);
 
-				actionMap[ActionCode.StandardConnect].SetParams(connectionParams);
-				actionMap[ActionCode.StandardConnect].Execute();
+				actions[ActionCode.Connect].SetParams(connectionParams);
+				actions[ActionCode.Connect].Execute();
 			}
 			catch (Exception exception)
 			{
@@ -71,13 +71,31 @@ namespace MasterView
 			}
 		}
 
-		private void Disconnect_Click(object sender, RoutedEventArgs e)
+		private void ModbusDisconnectButton_Click(object sender, RoutedEventArgs e)
 		{
 			try
 			{
-				connectionApi.Disconnect();
+				IConnectionParams connectionParams = new ConnectionParams();
+				connectionParams.ServiceType = ServiceTypeCode.ModbusService;
+				actions[ActionCode.Disconnect].SetParams(connectionParams);
+				actions[ActionCode.Disconnect].Execute();
 			}
-			catch(Exception exception)
+			catch (Exception exception)
+			{
+				MessageBox.Show(exception.Message, "Disconnect error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+		}
+
+		private void TcpDisconnectButton_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				IConnectionParams connectionParams = new ConnectionParams();
+				connectionParams.ServiceType = ServiceTypeCode.TcpService;
+				actions[ActionCode.Disconnect].SetParams(connectionParams);
+				actions[ActionCode.Disconnect].Execute();
+			}
+			catch (Exception exception)
 			{
 				MessageBox.Show(exception.Message, "Disconnect error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}

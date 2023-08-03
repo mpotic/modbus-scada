@@ -44,10 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Callback\IConnectionStatusCallback.cs" />
+    <Compile Include="DTO\Request\Interface\IParams.cs" />
     <Compile Include="DTO\Request\Interface\IReadParams.cs" />
     <Compile Include="DTO\Request\Interface\IWriteCoilParams.cs" />
     <Compile Include="DTO\Request\Interface\IWriteHoldingParams.cs" />
-    <Compile Include="DTO\Request\ReadParamsParams.cs" />
+    <Compile Include="DTO\Request\ReadParams.cs" />
     <Compile Include="DTO\Request\WriteCoilParams.cs" />
     <Compile Include="DTO\Request\WriteHoldingParams.cs" />
     <Compile Include="DTO\Response\Interface\IReadAnalogResponse.cs" />
@@ -59,17 +61,16 @@
     <Compile Include="DTO\Response\Response.cs" />
     <Compile Include="DTO\Response\TcpReceiveResponse.cs" />
     <Compile Include="Enums\ActionCode.cs" />
-    <Compile Include="Enums\ConnectionCode.cs" />
+    <Compile Include="Enums\ConnectionStatusCode.cs" />
     <Compile Include="DTO\Request\ConnectionParams.cs" />
     <Compile Include="DTO\Request\Interface\IConnectionParams.cs" />
-    <Compile Include="DTO\Request\Interface\IModbusActionParams.cs" />
-    <Compile Include="DTO\Request\ModbusActionParams.cs" />
     <Compile Include="Enums\SenderCode.cs" />
     <Compile Include="Connection\Tcp\ITcpSerializer.cs" />
     <Compile Include="Connection\Tcp\ITcpSocketHandler.cs" />
     <Compile Include="Enums\FunctionCode.cs" />
     <Compile Include="Connection\Tcp\TcpSerializer.cs" />
     <Compile Include="Connection\Tcp\TcpSocketHandler.cs" />
+    <Compile Include="Enums\ServiceTypeCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ByteArrayConverter.cs" />
     <Compile Include="Util\ConnectionHelper.cs" />

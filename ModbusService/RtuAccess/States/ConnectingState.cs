@@ -5,7 +5,7 @@ namespace ModbusService
 {
 	internal class ConnectingState : IState
 	{
-		public async Task<IResponse> Connenct(IConnectionParams connectionParams)
+		public async Task<IResponse> Connect(IConnectionParams connectionParams)
 		{
 			return await Task.FromResult(new Response(false, "Connection attempt in progress! Please wait."));
 		}

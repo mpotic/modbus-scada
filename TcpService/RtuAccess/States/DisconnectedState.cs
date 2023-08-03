@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Common.Enums;
 using System;
 using System.Threading.Tasks;
 
@@ -26,22 +27,24 @@ namespace TcpService
 
 			try
 			{
-				return await connectionService.Connect(connectionParams);
+				response = await connectionService.Connect(connectionParams);
 			}
 			catch (Exception e)
 			{
 				response = new Response(false, e.Message);
+				socketAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
+
+				return response;
 			}
 
-
-			if (response.IsSuccessful)
-			{
-				socketAccess.TransitionState(stateFactory.GetConnectedState(), ConnectionStatusCode.Connected);
-			}
-			else
+			if (!response.IsSuccessful || !connectionService.IsConnected)
 			{
 				socketAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
+				response = new Response(false, "Failed to connect!");
+
+				return response;
 			}
+			socketAccess.TransitionState(stateFactory.GetConnectedState(), ConnectionStatusCode.Connected);
 
 			return response;
 		}
@@ -53,7 +56,31 @@ namespace TcpService
 
 		public async Task<IResponse> Listen(IConnectionParams connectionParams)
 		{
-			return await Task.FromResult(new Response(false, "There is no established connection!"));
+			IResponse response;
+			socketAccess.TransitionState(stateFactory.GetConnectingState(), ConnectionStatusCode.Listening);
+
+			try
+			{
+				response = await connectionService.Listen(connectionParams);
+			}
+			catch (Exception e)
+			{
+				response = new Response(false, e.Message);
+				socketAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
+				
+				return response;
+			}
+
+			if (!response.IsSuccessful || !connectionService.IsConnected)
+			{
+				socketAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
+				response = new Response(false, "Failed to connect!");
+
+				return response;
+			}
+			socketAccess.TransitionState(stateFactory.GetConnectedState(), ConnectionStatusCode.Connected);
+
+			return response;
 		}
 
 		public async Task<ITcpReceiveResponse> Receive()

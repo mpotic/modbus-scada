@@ -57,14 +57,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Actions\DisconnectAction.cs" />
+    <Compile Include="Actions\Interfaces\IAction.cs" />
+    <Compile Include="Actions\Interfaces\IReadAction.cs" />
+    <Compile Include="Actions\Interfaces\IWriteHoldingAction.cs" />
+    <Compile Include="Actions\Interfaces\IWriteCoilAction.cs" />
+    <Compile Include="Callback\ConnectionStateCallback.cs" />
     <Compile Include="ConnectUserControl.xaml.cs">
       <DependentUpon>ConnectUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ModbusActions\IConnectionAction.cs" />
-    <Compile Include="ModbusActions\ReadAnalogInputAction.cs" />
-    <Compile Include="ModbusActions\ReadHoldingAction.cs" />
-    <Compile Include="ModbusActions\StandardConnectAction.cs" />
-    <Compile Include="ModbusActions\WriteHoldingAction.cs" />
+    <Compile Include="Actions\Interfaces\IConnectionAction.cs" />
+    <Compile Include="Actions\ReadAnalogInputAction.cs" />
+    <Compile Include="Actions\ReadHoldingAction.cs" />
+    <Compile Include="Actions\WriteHoldingAction.cs" />
     <Compile Include="ReadUserControl.xaml.cs">
       <DependentUpon>ReadUserControl.xaml</DependentUpon>
     </Compile>
@@ -100,11 +105,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModbusActions\IModbusAction.cs" />
-    <Compile Include="ModbusActions\ModbusConnectAction.cs" />
-    <Compile Include="ModbusActions\ReadCoilsAction.cs" />
-    <Compile Include="ModbusActions\ReadDiscreteInputsAction.cs" />
-    <Compile Include="ModbusActions\WriteCoilsAction.cs" />
+    <Compile Include="Actions\ConnectAction.cs" />
+    <Compile Include="Actions\ReadCoilsAction.cs" />
+    <Compile Include="Actions\ReadDiscreteInputsAction.cs" />
+    <Compile Include="Actions\WriteCoilsAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

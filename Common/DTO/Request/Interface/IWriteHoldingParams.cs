@@ -1,6 +1,6 @@
 ﻿namespace Common.DTO
 {
-	public interface IWriteHoldingParams
+	public interface IWriteHoldingParams : IParams
 	{
 		byte SlaveAddress { get; set; }
 

@@ -4,10 +4,10 @@ namespace MasterApi
 {
 	public interface IApiHandler
 	{
-		IAnalogApi AnalogApi { get; set; }
+		IWriteApi WriteApi { get; }
 
-		IDiscreteApi DiscreteApi { get; set; }
+		IReadApi ReadApi { get; }
 
-		IConnectionApi ConnectionApi { get; set; }
+		IConnectionApi ConnectionApi { get; }
 	}
 }

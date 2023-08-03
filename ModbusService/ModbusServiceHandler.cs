@@ -1,4 +1,6 @@
-﻿namespace ModbusService
+﻿using Common.Enums;
+
+namespace ModbusService
 {
 	public class ModbusServiceHandler : IModbusServiceHandler
 	{

@@ -6,57 +6,84 @@
 			 mc:Ignorable="d"
 			 FontSize="18"
 			 Background="White">
-    <Grid>
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <Border Margin="5" BorderBrush="gray" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock HorizontalAlignment="Center" Margin="10, 5, 10, 15">Mobus slave</TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="10, 5, 10, 5" Width="110">Host port:</Label>
-                            <TextBox Width="70" x:Name="ModbusHostPort"
-					 Margin="10, 10, 10, 5">20000</TextBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" >
-                            <Label Margin="10, 5, 10, 5" Width="110">Client port:</Label>
-                            <TextBox Width="70" x:Name="ModbusClientPort"
-					 Margin="10, 10, 10, 5">502</TextBox>
-                        </StackPanel>
-                        <Button x:Name="ModbusConnectButton"
-						Margin="10, 15, 10, 10"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Bottom"
-						Click="ModbusConnectButton_Click">Modbus Connect</Button>
-                    </StackPanel>
-                </Border>
-                <Border Margin="5" BorderBrush="gray" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock HorizontalAlignment="Center" Margin="10, 5, 10, 15">Standard TCP client</TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Margin="10, 5, 10, 5" Width="110">Host port:</Label>
-                            <TextBox Width="70" x:Name="StandardHostPort"
-					 Margin="10, 10, 10, 5">20000</TextBox>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" >
-                            <Label Margin="10, 5, 10, 5" Width="110">Client port:</Label>
-                            <TextBox Width="70" x:Name="StandardClientPort"
-					 Margin="10, 10, 10, 5">21000</TextBox>
-                        </StackPanel>
-                        <Button x:Name="StandardConnectButton"
-						Margin="10, 15, 10, 10"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Bottom"
-						Click="StandardConnectButton_Click">Standard Connect</Button>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-            <Border Margin="5" BorderBrush="gray" BorderThickness="1">
-                <Button x:Name="ModbusDisconnectButton"
-						Margin="10, 10, 10, 10"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Bottom"
-						Click="Disconnect_Click">Disconnect</Button>
-            </Border>
-        </StackPanel>
-    </Grid>
+	<Grid>
+		<StackPanel Orientation="Horizontal">
+			<Border Margin="5" BorderBrush="gray" BorderThickness="1">
+				<StackPanel Width="235">
+					<TextBlock HorizontalAlignment="Center" Margin="10, 5, 10, 5">Mobus slave</TextBlock>
+					<StackPanel Orientation="Horizontal">
+						<Label VerticalAlignment="Center" Margin="10, 5, 10, 5" Width="110">Host port:</Label>
+						<TextBox Width="70" x:Name="ModbusHostPort"
+					 Margin="10, 10, 10, 5" Padding="5">20000</TextBox>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" >
+						<Label VerticalAlignment="Center"  Margin="10, 5, 10, 5" Width="110">Client port:</Label>
+						<TextBox Width="70" x:Name="ModbusClientPort"
+					 Margin="10, 10, 10, 5" Padding="5">502</TextBox>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+						<Button x:Name="ModbusConnectButton"
+									Margin="10, 15, 10, 10" Padding="3"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Bottom"
+									Click="ModbusConnectButton_Click">
+							Connect
+						</Button>
+						<Button x:Name="ModbusDisconnectButton"
+									Margin="10, 10, 10, 10"
+									Padding="3"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Bottom"
+									Click="ModbusDisconnectButton_Click">
+							Disconnect
+						</Button>
+					</StackPanel>
+					<Border BorderBrush="DimGray" BorderThickness="0,1,0,0">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+							<Label Margin="5,5,5,5" >Status:</Label>
+							<TextBlock Name="ModbusStatusTextBlock" VerticalAlignment="Center" Margin="5,5,5,5" >Disconnected</TextBlock>
+							<Ellipse Name="ModbusStatusEllipse" Margin="10,0,10,0" Width="25" Height="25" StrokeThickness="1" Stroke="DimGray"  Fill="Red"></Ellipse>
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</Border>
+			<Border Margin="5" BorderBrush="gray" BorderThickness="1">
+				<StackPanel Width="235">
+					<TextBlock HorizontalAlignment="Center" Margin="10, 5, 10, 5">TCP client</TextBlock>
+					<StackPanel Orientation="Horizontal">
+						<Label VerticalAlignment="Center"  Margin="10, 5, 10, 5" Width="110">Host port:</Label>
+						<TextBox Width="70" x:Name="StandardHostPort"
+					 Margin="10, 10, 10, 5" Padding="5">20000</TextBox>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label VerticalAlignment="Center"  Margin="10, 5, 10, 5" Width="110">Client port:</Label>
+						<TextBox Width="70" x:Name="StandardClientPort"
+					 Margin="10, 10, 10, 5" Padding="5">21000</TextBox>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+						<Button Margin="10, 15, 10, 10" Padding="3"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Bottom"
+									Click="TcpConnectButton_Click">
+							Connect
+						</Button>
+						<Button Margin="10, 10, 10, 10"
+									Padding="3"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Bottom"
+									Click="TcpDisconnectButton_Click">
+							Disconnect
+						</Button>
+					</StackPanel>
+					<Border BorderBrush="DimGray" BorderThickness="0,1,0,0">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+							<Label Margin="5,5,5,5" >Status:</Label>
+							<TextBlock Name="TcpStatusTextBlock" VerticalAlignment="Center" Margin="5,5,5,5" >Disconnected</TextBlock>
+							<Ellipse Name="TcpStatusEllipse" Margin="10,0,10,0" Width="25" Height="25" StrokeThickness="1" Stroke="DimGray"  Fill="Red"></Ellipse>
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+	</Grid>
 </UserControl>

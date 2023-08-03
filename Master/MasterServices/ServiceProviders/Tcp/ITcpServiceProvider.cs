@@ -1,6 +1,6 @@
 ﻿namespace MasterServices
 {
-	public interface ITcpServiceProvider : IScadaServiceProvider
+	public interface ITcpServiceProvider : IRtuServiceProvider
 	{
 	}
 }

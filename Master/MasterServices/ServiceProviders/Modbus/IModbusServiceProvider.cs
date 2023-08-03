@@ -1,6 +1,6 @@
 ﻿namespace MasterServices
 {
-	public interface IModbusServiceProvider : IScadaServiceProvider
+	public interface IModbusServiceProvider : IRtuServiceProvider
 	{
 	}
 }

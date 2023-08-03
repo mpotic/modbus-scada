@@ -2,6 +2,7 @@
 using Common.Enums;
 using MasterApi.Api;
 using MasterApi.ViewModel;
+using MasterView.Actions;
 using MasterView.ModbusActions;
 using System;
 using System.Collections.Generic;
@@ -16,22 +17,26 @@ namespace MasterView
 	/// </summary>
 	public partial class ReadUserControl : UserControl
 	{
-		readonly Dictionary<ActionCode, IModbusAction> actionComboBoxItemMap;
+		readonly Dictionary<ActionCode, IReadAction> actions;
 
 		readonly IReadResultsViewModel readResultsViewModel;
 
-		public ReadUserControl(IDiscreteApi discreteApi, IAnalogApi analogApi, IReadResultsViewModel resultsViewModel)
+		public ReadUserControl(IReadApi readApi, IReadResultsViewModel resultsViewModel)
 		{
 			InitializeComponent();
 
-			actionComboBoxItemMap = new Dictionary<ActionCode, IModbusAction>();
-			actionComboBoxItemMap.Add(ActionCode.ReadDiscreteInputs, new ReadDiscreteInputsAction(discreteApi));
-			actionComboBoxItemMap.Add(ActionCode.ReadCoils, new ReadCoilsAction(discreteApi));
-			actionComboBoxItemMap.Add(ActionCode.ReadAnalogInputs, new ReadAnalogInputAction(analogApi));
-			actionComboBoxItemMap.Add(ActionCode.ReadHolding, new ReadHoldingAction(analogApi));
+			actions = new Dictionary<ActionCode, IReadAction>
+			{
+				{ ActionCode.ReadDiscreteInputs, new ReadDiscreteInputsAction(readApi) },
+				{ ActionCode.ReadCoils, new ReadCoilsAction(readApi) },
+				{ ActionCode.ReadAnalogInputs, new ReadAnalogInputAction(readApi) },
+				{ ActionCode.ReadHolding, new ReadHoldingAction(readApi) }
+			};
 
 			ActionComboBox.ItemsSource = new List<ActionCode>()
 				{ ActionCode.ReadDiscreteInputs, ActionCode.ReadCoils, ActionCode.ReadAnalogInputs, ActionCode.ReadHolding };
+			ServiceTypeComboBox.ItemsSource = Enum.GetValues(typeof(ServiceTypeCode));
+			ServiceTypeComboBox.SelectedItem = ServiceTypeCode.ModbusService;
 
 			readResultsViewModel = resultsViewModel;
 			ReadResultsTextBlock.DataContext = readResultsViewModel;
@@ -40,20 +45,17 @@ namespace MasterView
 
 		private void ReadButton_Click(object sender, RoutedEventArgs e)
 		{
-			byte slaveAddress;
-			ushort startAddress;
-			ushort points;
-			IModbusActionParams actionParams;
-
 			try
 			{
-				slaveAddress = byte.Parse(SlaveAddressTextBox.Text);
-				startAddress = ushort.Parse(StartAddressTextBox.Text);
-				points = ushort.Parse(PointCountTextBox.Text);
-				actionParams = new ModbusActionParams(slaveAddress, startAddress, points);
-
-				actionComboBoxItemMap[(ActionCode)ActionComboBox.SelectedItem].SetParams(actionParams);
-				actionComboBoxItemMap[(ActionCode)ActionComboBox.SelectedItem].Execute();
+				byte slaveAddress = byte.Parse(SlaveAddressTextBox.Text);
+				ushort startAddress = ushort.Parse(StartAddressTextBox.Text);
+				ushort points = ushort.Parse(PointCountTextBox.Text);
+				ServiceTypeCode serviceType = (ServiceTypeCode)ServiceTypeComboBox.SelectedItem;
+				IReadParams actionParams = new ReadParams(slaveAddress, startAddress, points, serviceType);
+				
+				ActionCode action = (ActionCode)ActionComboBox.SelectedItem;
+				actions[action].SetParams(actionParams);
+				actions[action].Execute();
 			}
 			catch (Exception exception)
 			{

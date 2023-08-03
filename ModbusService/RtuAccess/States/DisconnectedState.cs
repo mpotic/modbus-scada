@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Common.Enums;
 using System;
 using System.Threading.Tasks;
 
@@ -22,7 +23,7 @@ namespace ModbusService
 			this.stateFactory = stateFactory;
 		}
 
-		public async Task<IResponse> Connenct(IConnectionParams connectionParams)
+		public async Task<IResponse> Connect(IConnectionParams connectionParams)
 		{
 			IResponse response;
 			rtuAccess.TransitionState(stateFactory.GetConnectingState(), ConnectionStatusCode.Connecting);
@@ -31,21 +32,24 @@ namespace ModbusService
 			{
 				response = await connectionService.Connect(connectionParams);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				response = new Response(false, "Failed to connect!\n" + e.Message);
+				response = new Response(false, e.Message);
+				rtuAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
+
+				return response;
 			}
 
-			if (response.IsSuccessful)
-			{
-				rtuAccess.TransitionState(stateFactory.GetConnectedState(), ConnectionStatusCode.Connected);
-			}
-			else
+			if (!response.IsSuccessful || !connectionService.IsConnected)
 			{
 				rtuAccess.TransitionState(this, ConnectionStatusCode.Disconnected);
-			}
+				response = new Response(false, "Failed to connect!");
 
-            return response;
+				return response;
+			}
+			rtuAccess.TransitionState(stateFactory.GetConnectedState(), ConnectionStatusCode.Connected);
+
+			return response;
 		}
 
 		public IResponse Disconnect()

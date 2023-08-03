@@ -1,6 +1,6 @@
 ﻿namespace Common.DTO
 {
-	public interface IConnectionParams
+	public interface IConnectionParams : IParams
 	{
 		int LocalPort { get; set; }
 

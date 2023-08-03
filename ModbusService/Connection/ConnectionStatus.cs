@@ -1,4 +1,7 @@
-﻿namespace ModbusService
+﻿using Common.Callback;
+using Common.Enums;
+
+namespace ModbusService
 {
 	internal sealed class ConnectionStatus : IConnectionStatus
 	{
@@ -12,12 +15,12 @@
 			}
 			set
 			{
-				if(statusCode != value)
+				if (statusCode != value)
 				{
 					statusCode = value;
 				}
-	
-				if(Callback != null) 
+
+				if (Callback != null)
 				{
 					Callback.ConenctionStatusChanged(statusCode);
 				}

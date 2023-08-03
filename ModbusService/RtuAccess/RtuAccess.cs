@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Common.Enums;
 using System.Threading.Tasks;
 
 namespace ModbusService
@@ -22,7 +23,7 @@ namespace ModbusService
 
 		public Task<IResponse> Connenct(IConnectionParams connectionParams)
 		{
-			return state.Connenct(connectionParams);
+			return state.Connect(connectionParams);
 		}
 
 		public IResponse Disconnect()

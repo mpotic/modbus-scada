@@ -52,8 +52,6 @@
     <Compile Include="Connection\ConnectionStatus.cs" />
     <Compile Include="Connection\Interfaces\IConnectionHandle.cs" />
     <Compile Include="Connection\Interfaces\IConnectionStatus.cs" />
-    <Compile Include="Connection\Interfaces\IConnectionStatusCallback.cs" />
-    <Compile Include="Enums\ConnectionStatusCode.cs" />
     <Compile Include="IModbusServiceHandler.cs" />
     <Compile Include="ModbusServiceHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

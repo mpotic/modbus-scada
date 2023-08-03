@@ -4,37 +4,44 @@ using Common.Util;
 using Common.Enums;
 using System.Threading.Tasks;
 using TcpService;
+using Common.Callback;
 
 namespace MasterServices
 {
-	internal class TcpServiceProvider : ITcpServiceProvider
+	internal sealed class TcpServiceProvider : ITcpServiceProvider
 	{
-		ICommunicationApi tcpServiceCommunicationApi;
+		ICommunicationApi communicationService;
 
-		IConnectionApi tcpServiceConnectionApi;
+		IConnectionApi connectionService;
 
-		ITcpSerializer tcpSerializer = new TcpSerializer();
+		ITcpSerializer serializer = new TcpSerializer();
 
 		IByteArrayConverter converter = new ByteArrayConverter();
 
-		public async Task<IResponse> Connenct(IConnectionParams connectionParams)
+		public TcpServiceProvider(ITcpServiceHandler tcpServiceHandler)
 		{
-			return await tcpServiceConnectionApi.Connect(connectionParams);
+			communicationService = tcpServiceHandler.CommunicationApi;
+			connectionService = tcpServiceHandler.ConnectionApi;
+		}
+
+		public async Task<IResponse> Connect(IConnectionParams connectionParams)
+		{
+			return await connectionService.Connect(connectionParams);
 		}
 
 		public IResponse Disconnect()
 		{
-			return tcpServiceConnectionApi.Disconnect();
+			return connectionService.Disconnect();
 		}
 
 		public async Task<IReadAnalogResponse> ReadHolding(IReadParams readParams)
 		{
-			tcpSerializer.InitMessage();
-			tcpSerializer.AddHeader(SenderCode.Master, FunctionCode.ReadHolding);
-			tcpSerializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadHolding);
+			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 			
-			tcpServiceCommunicationApi.Send(tcpSerializer.Message);
-			ITcpReceiveResponse tcpResponse = await tcpServiceCommunicationApi.Receive();
+			communicationService.Send(serializer.Message);
+			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
 
 			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
 			IReadAnalogResponse response = new ReadAnalogResponse(values);
@@ -44,12 +51,12 @@ namespace MasterServices
 
 		public async Task<IReadAnalogResponse> ReadAnalogInput(IReadParams readParams)
 		{
-			tcpSerializer.InitMessage();
-			tcpSerializer.AddHeader(SenderCode.Master, FunctionCode.ReadAnalogInputs);
-			tcpSerializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadAnalogInputs);
+			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			tcpServiceCommunicationApi.Send(tcpSerializer.Message);
-			ITcpReceiveResponse tcpResponse = await tcpServiceCommunicationApi.Receive();
+			communicationService.Send(serializer.Message);
+			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
 
 			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
 			IReadAnalogResponse response = new ReadAnalogResponse(values);
@@ -59,12 +66,12 @@ namespace MasterServices
 
 		public async Task<IReadDiscreteResponse> ReadCoil(IReadParams readParams)
 		{
-			tcpSerializer.InitMessage();
-			tcpSerializer.AddHeader(SenderCode.Master, FunctionCode.ReadCoils);
-			tcpSerializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadCoils);
+			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			tcpServiceCommunicationApi.Send(tcpSerializer.Message);
-			ITcpReceiveResponse tcpResponse = await tcpServiceCommunicationApi.Receive();
+			communicationService.Send(serializer.Message);
+			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
 			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;
@@ -72,12 +79,12 @@ namespace MasterServices
 
 		public async Task<IReadDiscreteResponse> ReadDiscreteInput(IReadParams readParams)
 		{
-			tcpSerializer.InitMessage();
-			tcpSerializer.AddHeader(SenderCode.Master, FunctionCode.ReadDiscreteInputs);
-			tcpSerializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadDiscreteInputs);
+			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			tcpServiceCommunicationApi.Send(tcpSerializer.Message);
-			ITcpReceiveResponse tcpResponse = await tcpServiceCommunicationApi.Receive();
+			communicationService.Send(serializer.Message);
+			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
 			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;
@@ -86,7 +93,7 @@ namespace MasterServices
 		public IResponse WriteHolding(IWriteHoldingParams writeParams)
 		{
 			byte[] values = converter.ConvertToByteArray(writeParams.WriteValues);
-			IResponse response = tcpServiceCommunicationApi.Send(values);
+			IResponse response = communicationService.Send(values);
 
 			return response;
 		}
@@ -94,9 +101,14 @@ namespace MasterServices
 		public IResponse WriteCoil(IWriteCoilParams writeParams)
 		{
 			byte[] values = converter.ConvertToByteArray(writeParams.WriteValues);
-			IResponse response = tcpServiceCommunicationApi.Send(values);
+			IResponse response = communicationService.Send(values);
 
 			return response;
+		}
+
+		public void RegisterCallack(IConnectionStatusCallback callback)
+		{
+			connectionService.RegisterCallack(callback);
 		}
 	}
 }

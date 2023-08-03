@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Common.Enums;
 using System;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace ModbusService
 			this.stateFactory = stateFactory;
 		}
 
-		public async Task<IResponse> Connenct(IConnectionParams connectionParams)
+		public async Task<IResponse> Connect(IConnectionParams connectionParams)
 		{
 			return await Task.FromResult(new Response(false, "Already connected!"));
 		}

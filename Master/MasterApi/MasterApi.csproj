@@ -41,12 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\AnalogApi.cs" />
     <Compile Include="Api\ConnectionApi.cs" />
-    <Compile Include="Api\DiscreteApi.cs" />
-    <Compile Include="Api\IAnalogApi.cs" />
     <Compile Include="Api\IConnectionApi.cs" />
-    <Compile Include="Api\IDiscreteApi.cs" />
+    <Compile Include="Api\IReadApi.cs" />
+    <Compile Include="Api\IWriteApi.cs" />
+    <Compile Include="Api\ReadApi.cs" />
+    <Compile Include="Api\WriteApi.cs" />
     <Compile Include="IMessageBoxCallback.cs" />
     <Compile Include="IApiHandler.cs" />
     <Compile Include="ApiHandler.cs" />

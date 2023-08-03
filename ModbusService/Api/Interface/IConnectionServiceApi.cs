@@ -1,4 +1,5 @@
-﻿using Common.DTO;
+﻿using Common.Callback;
+using Common.DTO;
 using System.Threading.Tasks;
 
 namespace ModbusService

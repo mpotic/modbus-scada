@@ -44,33 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection\IConnection.cs" />
-    <Compile Include="Connection\IStandardConnection.cs" />
-    <Compile Include="Connection\StandardConnection.cs" />
-    <Compile Include="ServiceProviders\Connection\ConnectionServiceProvider.cs" />
-    <Compile Include="ServiceProviders\Connection\IConnectionServiceProvider.cs" />
-    <Compile Include="ServiceProviders\IScadaServiceProvider.cs" />
+    <Compile Include="ServiceProviders\IRtuServiceProvider.cs" />
+    <Compile Include="ServiceProviders\IServiceProviderHandler.cs" />
     <Compile Include="ServiceProviders\Modbus\IModbusServiceProvider.cs" />
     <Compile Include="ServiceProviders\Modbus\ModbusServiceProvider.cs" />
+    <Compile Include="ServiceProviders\ServiceProviderHandler.cs" />
     <Compile Include="ServiceProviders\Tcp\ITcpServiceProvider.cs" />
     <Compile Include="ServiceProviders\Tcp\TcpServiceProvider.cs" />
-    <Compile Include="Services\Connection\ConnectedServiceStatus.cs" />
-    <Compile Include="Services\Modbus\IModbusProtocolService.cs" />
-    <Compile Include="Services\Modbus\IModbusService.cs" />
-    <Compile Include="Services\Modbus\ITcpProtocolService.cs" />
-    <Compile Include="Services\Modbus\ModbusProtocolService.cs" />
-    <Compile Include="Services\Modbus\TcpProtocolService.cs" />
-    <Compile Include="ServiceProviders\Analog\AnalogServiceProvider.cs" />
-    <Compile Include="ServiceProviders\Analog\IAnalogServiceProvider.cs" />
-    <Compile Include="Services\Connection\ConnectionService.cs" />
-    <Compile Include="Services\Connection\IConnectionService.cs" />
-    <Compile Include="Connection\IModbusConnection.cs" />
-    <Compile Include="Connection\ModbusConnection.cs" />
-    <Compile Include="ServiceProviders\Discrete\DiscreteServiceProvider.cs" />
-    <Compile Include="ServiceProviders\Discrete\IDiscreteServiceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceProviders\IServiceHandler.cs" />
-    <Compile Include="ServiceProviders\ServiceHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

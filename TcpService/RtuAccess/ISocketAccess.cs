@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using Common.Enums;
 using System.Threading.Tasks;
 
 namespace TcpService

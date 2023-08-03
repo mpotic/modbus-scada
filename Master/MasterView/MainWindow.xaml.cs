@@ -18,8 +18,8 @@ namespace MasterView
 			IReadResultsViewModel readResultsViewModel = new ReadResultsViewModel();
 			IApiHandler apiHandler = new ApiHandler(readResultsViewModel, callback);
 
-			ReadTabItem.Content = new ReadUserControl(apiHandler.DiscreteApi, apiHandler.AnalogApi, readResultsViewModel);
-			WriteTabItem.Content = new WriteUserControl(apiHandler.DiscreteApi, apiHandler.AnalogApi);
+			ReadTabItem.Content = new ReadUserControl(apiHandler.ReadApi, readResultsViewModel);
+			WriteTabItem.Content = new WriteUserControl(apiHandler.WriteApi);
 			ConnectTabItem.Content = new ConnectUserControl(apiHandler.ConnectionApi);
 		}
 	}

@@ -1,13 +1,15 @@
-﻿using Common.DTO;
+﻿using Common.Callback;
+using Common.DTO;
+using Common.Enums;
 
 namespace MasterApi.Api
 {
 	public interface IConnectionApi
 	{
-		void ModbusConnect(IConnectionParams connectionParams);
+		void Connect(IConnectionParams connectionParams);
 
-		void StandardConnect(IConnectionParams connectionParams);
+		void Disconnect(IConnectionParams connectionParams);
 
-		void Disconnect();
+		void RegisterConnectionStatusCallback(IConnectionStatusCallback callback, ServiceTypeCode serviceType);
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace ModbusService
+﻿using Common.Callback;
+using Common.Enums;
+
+namespace ModbusService
 {
 	internal interface IConnectionStatus
 	{

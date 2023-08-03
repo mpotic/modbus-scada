@@ -1,4 +1,7 @@
-﻿namespace TcpService
+﻿using Common.Callback;
+using Common.Enums;
+
+namespace TcpService
 {
 	internal sealed class ConnectionStatus : IConnectionStatus
 	{
@@ -25,5 +28,6 @@
 		}
 
 		public IConnectionStatusCallback Callback { get; set; }
+		IConnectionStatusCallback IConnectionStatus.Callback { get; set; }
 	}
 }

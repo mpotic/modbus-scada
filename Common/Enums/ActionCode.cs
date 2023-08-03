@@ -8,8 +8,7 @@
 		ReadHolding,
 		WriteCoils,
 		WriteHolding,
-		ModbusConnect,
-		StandardConnect,
+		Connect,
 		Disconnect
 	}
 }

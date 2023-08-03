@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace MasterView.Callback
 {
-	public class MessageBoxCallback : IMessageBoxCallback
+	internal sealed class MessageBoxCallback : IMessageBoxCallback
 	{
 		public void DisplayError(string message)
 		{

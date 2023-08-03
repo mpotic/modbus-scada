@@ -1,6 +1,6 @@
 ﻿using MasterApi.Api;
 using MasterApi.ViewModel;
-using MasterServices.Services;
+using MasterServices;
 
 namespace MasterApi
 {
@@ -8,17 +8,16 @@ namespace MasterApi
 	{
 		public ApiHandler(IReadResultsViewModel readResults, IMessageBoxCallback callback)
 		{
-			IServiceHandler serviceInitializer = new ServiceHandler();
-
-			AnalogApi = new AnalogApi(serviceInitializer.AnalogProvider, readResults, callback);
-			DiscreteApi = new DiscreteApi(serviceInitializer.DiscreteProvider, readResults, callback);
-			ConnectionApi = new ConnectionApi(serviceInitializer.ConnectionProvider, callback);
+			IServiceProviderHandler serviceHandler = new ServiceProviderHandler();
+			WriteApi = new WriteApi(callback, serviceHandler);
+			ReadApi = new ReadApi(readResults, callback, serviceHandler);
+			ConnectionApi = new ConnectionApi(serviceHandler, callback);
 		}
 
-		public IAnalogApi AnalogApi { get; set; }
+		public IWriteApi WriteApi { get; }
 
-		public IDiscreteApi DiscreteApi { get; set; }
+		public IReadApi ReadApi { get; }
 
-		public IConnectionApi ConnectionApi { get; set; }
+		public IConnectionApi ConnectionApi { get; }
 	}
 }

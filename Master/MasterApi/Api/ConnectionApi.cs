@@ -1,23 +1,30 @@
-﻿using Common.DTO;
-using MasterServices.ServiceProviders;
+﻿using Common.Callback;
+using Common.DTO;
+using Common.Enums;
+using MasterServices;
+using System.Collections.Generic;
 
 namespace MasterApi.Api
 {
 	public class ConnectionApi : IConnectionApi
 	{
-		readonly IConnectionServiceProvider connectionService;
-
 		readonly IMessageBoxCallback messageBoxCallback;
-		
-		public ConnectionApi(IConnectionServiceProvider connectionService, IMessageBoxCallback messageBoxCallback)
+
+		Dictionary<ServiceTypeCode, IRtuServiceProvider> services;
+
+		public ConnectionApi(IServiceProviderHandler handler, IMessageBoxCallback messageBoxCallback)
 		{
-			this.connectionService = connectionService;
 			this.messageBoxCallback = messageBoxCallback;
+			services = new Dictionary<ServiceTypeCode, IRtuServiceProvider>()
+			{
+				{ ServiceTypeCode.ModbusService, handler.ModbusServiceProvider },
+				{ ServiceTypeCode.TcpService, handler.TcpServiceProvider }
+			};
 		}
 
-		public void ModbusConnect(IConnectionParams connectionParams)
+		public async void Connect(IConnectionParams connectionParams)
 		{
-			IResponse response = connectionService.ModbusConnect(connectionParams);
+			IResponse response = await services[connectionParams.ServiceType].Connect(connectionParams);
 
 			if (!response.IsSuccessful)
 			{
@@ -26,12 +33,13 @@ namespace MasterApi.Api
 				return;
 			}
 
-			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.ErrorMessage) ? "Modbus connection established!" : response.ErrorMessage);
+			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.ErrorMessage) ? 
+				$"{connectionParams.ServiceType} connection established!" : response.ErrorMessage);
 		}
 
-		public async void StandardConnect(IConnectionParams connectionParams)
+		public void Disconnect(IConnectionParams connectionParams)
 		{
-			IResponse response = await connectionService.StandardConnect(connectionParams);
+			IResponse response = services[connectionParams.ServiceType].Disconnect();
 
 			if (!response.IsSuccessful)
 			{
@@ -40,21 +48,13 @@ namespace MasterApi.Api
 				return;
 			}
 
-			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.ErrorMessage) ? "Standard connection established!" : response.ErrorMessage);
+			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.ErrorMessage) ?
+				"Disconnected!" : response.ErrorMessage);
 		}
 
-		public void Disconnect()
+		public void RegisterConnectionStatusCallback(IConnectionStatusCallback callback, ServiceTypeCode serviceType)
 		{
-			IResponse response = connectionService.Disconnect();
-
-			if (!response.IsSuccessful)
-			{
-				messageBoxCallback.DisplayWarning(response.ErrorMessage);
-
-				return;
-			}
-
-			messageBoxCallback.DisplayInformation(string.IsNullOrWhiteSpace(response.ErrorMessage) ? "Disconnected!" : response.ErrorMessage);
+			services[serviceType].RegisterCallack(callback);
 		}
 	}
 }
