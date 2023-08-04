@@ -16,32 +16,32 @@ namespace TcpService
 		{
 			get
 			{
-				return connectionHandle.TcpSocketHandler.IsConnected;
+				return connectionHandle.TcpSocket.IsConnected;
 			}
 		}
 
 		public async Task<IResponse> Connect(IConnectionParams connectionParams)
 		{
-			await connectionHandle.TcpSocketHandler.ConnectAsync(connectionParams.RemotePort, connectionParams.LocalPort);
+			await connectionHandle.TcpSocket.ConnectAsync(connectionParams.RemotePort, connectionParams.LocalPort);
 
 			return new Response(true);
 		}
 
 		public IResponse Disconnect()
 		{
-			connectionHandle.TcpSocketHandler.CloseAndUnbindWorkingSocket();
-			connectionHandle.TcpSocketHandler.CloseListening();
+			connectionHandle.TcpSocket.CloseAndUnbindWorkingSocket();
+			connectionHandle.TcpSocket.CloseListening();
 
 			return new Response(true);
 		}
 
 		public async Task<IResponse> Listen(IConnectionParams connectionParams)
 		{
-			connectionHandle.TcpSocketHandler.Listen(connectionParams.LocalPort);
-			await connectionHandle.TcpSocketHandler.AcceptAsync();
-			connectionHandle.TcpSocketHandler.CloseListening();
+			connectionHandle.TcpSocket.Listen(connectionParams.LocalPort);
+			await connectionHandle.TcpSocket.AcceptAsync();
+			connectionHandle.TcpSocket.CloseListening();
 
 			return new Response(true);
-		}
+		} 
 	}
 }

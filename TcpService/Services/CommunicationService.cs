@@ -14,7 +14,7 @@ namespace TcpService
 
 		public async Task<ITcpReceiveResponse> Receive()
 		{
-			byte[] values = await connectionHandle.TcpSocketHandler.ReceiveAsync();
+			byte[] values = await connectionHandle.TcpSocket.ReceiveAsync();
 			ITcpReceiveResponse response = new TcpReceiveResponse(true, values);
 
 			return response;
@@ -22,7 +22,7 @@ namespace TcpService
 
 		public IResponse Send(byte[] message)
 		{
-			connectionHandle.TcpSocketHandler.Send(message);
+			connectionHandle.TcpSocket.Send(message);
 
 			return new Response(true);
 		}

@@ -45,22 +45,18 @@ namespace Common.Connection
 
 		public async Task ConnectAsync(int remotePort)
 		{
-			CloseAndUnbindWorkingSocket();
 			workingSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+			workingSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Loopback, remotePort);
 			await workingSocket.ConnectAsync(remoteEndpoint);
 		}
 
 		public async Task ConnectAsync(int remotePort, int localPort)
 		{
-			CloseAndUnbindWorkingSocket();
 			workingSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-			if (!workingSocket.IsBound)
-			{
-				IPEndPoint localEndpoint = new IPEndPoint(IPAddress.Loopback, localPort);
-				workingSocket.Bind(localEndpoint);
-			}
+			workingSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			IPEndPoint localEndpoint = new IPEndPoint(IPAddress.Loopback, localPort);
+			workingSocket.Bind(localEndpoint);
 
 			IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Loopback, remotePort);
 			await workingSocket.ConnectAsync(remoteEndpoint);
@@ -69,9 +65,9 @@ namespace Common.Connection
 		public async Task<byte[]> ReceiveAsync()
 		{
 			ArraySegment<byte> receiveBuffer = new ArraySegment<byte>(new byte[1024]);
-			await workingSocket.ReceiveAsync(receiveBuffer, SocketFlags.None);
+			int count = await workingSocket.ReceiveAsync(receiveBuffer, SocketFlags.None);
 
-			return receiveBuffer.ToArray();
+			return receiveBuffer.ToArray().Take(count).ToArray();
 		}
 
 		public void Send(byte[] message)
@@ -89,9 +85,10 @@ namespace Common.Connection
 			if (workingSocket.Connected)
 			{
 				workingSocket.Shutdown(SocketShutdown.Both);
+				workingSocket.Close();
 			}
 
-			workingSocket.Close();
+			workingSocket.Dispose();
 		}
 
 		public void CloseListening()

@@ -8,7 +8,7 @@
 		Title="Modbus Master"
 		SizeToContent="WidthAndHeight"
 		ResizeMode="NoResize"
-		FontSize="18">
+		FontSize="16">
 	<TabControl>
 		<TabItem MinWidth="100"
 				 Header="Read"

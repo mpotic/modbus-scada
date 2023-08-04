@@ -4,11 +4,9 @@
 	{
 		static void Main(string[] args)
 		{
-			IMenu menu = new Menu();
+			IInputApi inputApi = new InputApi();
 
-			menu.BeginAndAutoConnect();
-			
-			menu.ReadUserInput();
+			inputApi.ReadUserInput();
 		}
 	}
 }

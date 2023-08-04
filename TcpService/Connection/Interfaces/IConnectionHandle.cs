@@ -4,6 +4,6 @@ namespace TcpService
 {
 	internal interface IConnectionHandle
 	{
-		ITcpSocketHandler TcpSocketHandler { get; set; }
+		ITcpSocketHandler TcpSocket { get; set; }
 	}
 }

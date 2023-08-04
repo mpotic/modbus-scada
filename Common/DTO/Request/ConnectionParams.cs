@@ -4,28 +4,28 @@ namespace Common.DTO
 {
 	public sealed class ConnectionParams : IConnectionParams
 	{
-		public ConnectionParams() 
+		public ConnectionParams(ServiceTypeCode serviceType)
 		{
-		}	
-
-		public ConnectionParams(int clientPort, int serverPort, ServiceTypeCode serviceType)
-		{
-			RemotePort = clientPort;
-			LocalPort = serverPort;
 			ServiceType = serviceType;
 		}
 
-		public ConnectionParams(int clientPort, int serverPort)
+		public ConnectionParams(int remotePort, int localPort, ServiceTypeCode serviceType)
 		{
-			RemotePort = clientPort;
-			LocalPort = serverPort;
+			RemotePort = remotePort;
+			LocalPort = localPort;
+			ServiceType = serviceType;
+		}
+
+		public ConnectionParams(int remotePort, int localPort)
+		{
+			RemotePort = remotePort;
+			LocalPort = localPort;
 			ServiceType = ServiceTypeCode.ModbusService;
 		}
 
-        public ConnectionParams(int clientPort)
+        public ConnectionParams(int localPort)
         {
-            RemotePort = clientPort;
-			LocalPort = -1;
+            LocalPort = localPort;
 			ServiceType = ServiceTypeCode.ModbusService;
         }
 

@@ -79,7 +79,14 @@ namespace Common.Connection
             Message = Message.Concat(bodyBytes).ToArray();
         }
 
-        public SenderCode ReadSenderCodeFromHeader()
+		public void AddBody(byte[] values)
+		{
+			string body = string.Join(",", values);
+			byte[] bodyBytes = Encoding.UTF8.GetBytes(body);
+			Message = Message.Concat(bodyBytes).ToArray();
+		}
+
+		public SenderCode ReadSenderCodeFromHeader()
         {
             string messageString = Encoding.UTF8.GetString(Message);
             string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);

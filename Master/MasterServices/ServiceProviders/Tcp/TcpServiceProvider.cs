@@ -5,6 +5,7 @@ using Common.Enums;
 using System.Threading.Tasks;
 using TcpService;
 using Common.Callback;
+using System.Linq;
 
 namespace MasterServices
 {

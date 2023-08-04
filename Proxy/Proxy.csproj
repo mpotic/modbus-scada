@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NModbus, Version=3.0.78.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NModbus.3.0.78\lib\net46\NModbus.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,33 +43,50 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMenu.cs" />
-    <Compile Include="MessageHandling\Handlers\IMessageHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadAnalogInputHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadCoilHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\IModbusRequestHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadDiscreteInputHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\ReadHoldingHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\WriteCoilHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ModbusRequestHandlers\WriteHoldingHandler.cs" />
-    <Compile Include="MessageHandling\IMessageWorker.cs" />
-    <Compile Include="MessageHandling\MessageWorker.cs" />
-    <Compile Include="MessageHandling\Handlers\ProxyToMasterMessageHandler.cs" />
-    <Compile Include="MessageHandling\Handlers\ProxyToSlaveMessageHandler.cs" />
-    <Compile Include="Menu.cs" />
-    <Compile Include="MessageHandling\Handlers\MasterMessageHandler.cs" />
+    <Compile Include="Commands\Modbus\IModbusCommand.cs" />
+    <Compile Include="Commands\Modbus\ReadAnalogInputCommand.cs" />
+    <Compile Include="Commands\Modbus\ReadCoilCommand.cs" />
+    <Compile Include="Commands\Modbus\ReadDiscreteInputCommand.cs" />
+    <Compile Include="Commands\Modbus\ReadHoldingCommand.cs" />
+    <Compile Include="Commands\Modbus\WriteCoilCommand.cs" />
+    <Compile Include="Commands\Modbus\WriteHoldingCommand.cs" />
+    <Compile Include="Commands\Message\IMessageCommand.cs" />
+    <Compile Include="Commands\Message\MasterMessageCommand.cs" />
+    <Compile Include="Commands\Message\ProxyToMasterMessageCommand.cs" />
+    <Compile Include="Commands\Message\ProxyToSlaveMessageCommand.cs" />
+    <Compile Include="Connections\IConnection.cs" />
+    <Compile Include="Connections\IModbusConnection.cs" />
+    <Compile Include="Connections\ITcpConnection.cs" />
+    <Compile Include="Connections\ModbusConnection.cs" />
+    <Compile Include="Connections\TcpConnection.cs" />
+    <Compile Include="Main\InputApi.cs" />
+    <Compile Include="Main\IInputApi.cs" />
+    <Compile Include="Main\IProxyWorker.cs" />
+    <Compile Include="Main\IReceiver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Main\ProxyWorker.cs" />
+    <Compile Include="Main\Receiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{DFB265A0-9FDF-4BA5-B05D-E7221A629165}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModbusService\ModbusService.csproj">
+      <Project>{d2d35c06-cd1e-4809-a828-7907091e0c0e}</Project>
+      <Name>ModbusService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TcpService\TcpService.csproj">
+      <Project>{a517bf8f-15ed-4fc6-9632-99e0283ecafc}</Project>
+      <Name>TcpService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Message\Factory\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

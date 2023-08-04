@@ -4,6 +4,6 @@ namespace TcpService
 {
 	internal sealed class ConnectionHandle : IConnectionHandle
 	{
-		public ITcpSocketHandler TcpSocketHandler { get; set; }
+		public ITcpSocketHandler TcpSocket { get; set; } = new TcpSocketHandler();
 	}
 }

@@ -5,7 +5,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:local="clr-namespace:MasterView"
 			 mc:Ignorable="d"
-			 FontSize="18"
+			 FontSize="16"
 			 Background="White">
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -50,11 +50,11 @@
 				Margin="10,0,0,0">
 			<StackPanel>
 				<Border BorderThickness="0,0,0,2" BorderBrush="DarkGray" Margin="0,0,0,10">
-					<Label Margin="10, 0, 10, 0"
+					<Label FontSize="20" Margin="10, 0, 10, 0"
 					   HorizontalAlignment="Center">Read results</Label>
 				</Border>
 				<Grid>
-					<ScrollViewer MaxHeight="340"
+					<ScrollViewer MaxHeight="330"
 								  VerticalScrollBarVisibility="Auto">
 						<TextBlock x:Name="ReadResultsTextBlock"
 								   Margin="10, 0, 10, 5"></TextBlock>

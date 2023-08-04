@@ -38,8 +38,7 @@ namespace MasterView
 			{
 				int clientPort = int.Parse(ModbusClientPort.Text);
 				int hostPort = int.Parse(ModbusHostPort.Text);
-
-				IConnectionParams connectionParams = new ConnectionParams(clientPort, hostPort);
+				IConnectionParams connectionParams = new ConnectionParams(clientPort, hostPort, ServiceTypeCode.ModbusService);
 				actions[ActionCode.Connect].SetParams(connectionParams);
 				actions[ActionCode.Connect].Execute();
 			}
@@ -59,9 +58,7 @@ namespace MasterView
 			{
 				clientPort = int.Parse(StandardClientPort.Text);
 				hostPort = int.Parse(StandardHostPort.Text);
-
-				connectionParams = new ConnectionParams(clientPort, hostPort);
-
+				connectionParams = new ConnectionParams(clientPort, hostPort, ServiceTypeCode.TcpService);
 				actions[ActionCode.Connect].SetParams(connectionParams);
 				actions[ActionCode.Connect].Execute();
 			}
@@ -75,8 +72,7 @@ namespace MasterView
 		{
 			try
 			{
-				IConnectionParams connectionParams = new ConnectionParams();
-				connectionParams.ServiceType = ServiceTypeCode.ModbusService;
+				IConnectionParams connectionParams = new ConnectionParams(ServiceTypeCode.ModbusService);
 				actions[ActionCode.Disconnect].SetParams(connectionParams);
 				actions[ActionCode.Disconnect].Execute();
 			}
@@ -90,8 +86,7 @@ namespace MasterView
 		{
 			try
 			{
-				IConnectionParams connectionParams = new ConnectionParams();
-				connectionParams.ServiceType = ServiceTypeCode.TcpService;
+				IConnectionParams connectionParams = new ConnectionParams(ServiceTypeCode.TcpService);
 				actions[ActionCode.Disconnect].SetParams(connectionParams);
 				actions[ActionCode.Disconnect].Execute();
 			}

@@ -28,6 +28,5 @@ namespace TcpService
 		}
 
 		public IConnectionStatusCallback Callback { get; set; }
-		IConnectionStatusCallback IConnectionStatus.Callback { get; set; }
 	}
 }
