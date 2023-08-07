@@ -3,6 +3,7 @@
 namespace Common.Connection
 {
 	/// <summary>
+	/// Initializes a byte array message which at most takes 1024 bytes of storage.
 	/// Used for interpreting the packet that represents a request for the modbus slave.
 	/// The packet is structured as one of the following: 
 	///     write request: "SenderCode;FunctionCode//SlaveAddress;StartAddress;NumberOfPoints",

@@ -29,10 +29,10 @@
 					   Margin="10, 0, 10, 5" Padding="5"></ComboBox>
 			<Label Margin="10, 0, 10, 0">Slave address:</Label>
 			<TextBox x:Name="SlaveAddressTextBox"
-					 Margin="10, 0, 10, 5" Padding="5"></TextBox>
+					 Margin="10, 0, 10, 5" Padding="5">1</TextBox>
 			<Label Margin="10, 0, 10, 0">Start address:</Label>
 			<TextBox x:Name="StartAddressTextBox"
-					 Margin="10, 0, 10, 5" Padding="5"></TextBox>
+					 Margin="10, 0, 10, 5" Padding="5">0</TextBox>
 			<Label Margin="10, 0, 10, 0">Values (separate with comma):</Label>
 			<TextBox x:Name="ValuesTextBox"
 					 Margin="10, 0, 10, 5" Padding="5"></TextBox>

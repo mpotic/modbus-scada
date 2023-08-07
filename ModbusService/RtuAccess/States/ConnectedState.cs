@@ -61,7 +61,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new ReadAnalogResponse(true, "Failed to read holding registers!\n" + e.Message);
+				response = new ReadAnalogResponse(false, "Failed to read holding registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{
@@ -82,7 +82,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new ReadAnalogResponse(true, "Failed to read analog input registers!\n" + e.Message);
+				response = new ReadAnalogResponse(false, "Failed to read analog input registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{
@@ -104,7 +104,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new ReadDiscreteResponse(true, "Failed to read coil registers!\n" + e.Message);
+				response = new ReadDiscreteResponse(false, "Failed to read coil registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{
@@ -126,7 +126,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new ReadDiscreteResponse(true, "Failed to read discrete input registers!\n" + e.Message);
+				response = new ReadDiscreteResponse(false, "Failed to read discrete input registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{
@@ -148,7 +148,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new Response(true, "Failed to write holding registers!\n" + e.Message);
+				response = new Response(false, "Failed to write holding registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{
@@ -170,7 +170,7 @@ namespace ModbusService
 			}
 			catch (Exception e)
 			{
-				response = new Response(true, "Failed to write coil registers!\n" + e.Message);
+				response = new Response(false, "Failed to write coil registers!\n" + e.Message);
 
 				if (!connectionService.IsConnected)
 				{

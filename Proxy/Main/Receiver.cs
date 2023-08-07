@@ -12,11 +12,11 @@ namespace Proxy
 {
 	internal class Receiver : IReceiver
 	{
-		IDictionary<SenderCode, IMessageCommand> commands;
+		IDictionary<SenderCode, IMessageCommand> processingCommand;
 
 		public Receiver(IModbusConnection modbusConnection)
 		{
-			commands = new Dictionary<SenderCode, IMessageCommand>
+			processingCommand = new Dictionary<SenderCode, IMessageCommand>
 			{
 				{ SenderCode.Master, new MasterMessageCommand() },
 				{ SenderCode.ProxyToMaster, new ProxyToMasterMessageCommand() },
@@ -49,8 +49,8 @@ namespace Proxy
 					PrintReceivedMessage(response.Payload);
 					message.InitMessage(response.Payload);
 					SenderCode senderCode = message.ReadSenderCodeFromHeader();
-					commands[senderCode].SetParams(sendConnection, message);
-					commands[senderCode].Execute();
+					processingCommand[senderCode].SetParams(sendConnection, message);
+					processingCommand[senderCode].Execute();
 				}
 				catch (SocketException ex)
 				when (ex.SocketErrorCode == SocketError.OperationAborted || ex.SocketErrorCode == SocketError.Shutdown)

@@ -70,6 +70,7 @@ namespace MasterApi.Api
 			if (!response.IsSuccessful)
 			{
 				messageBoxCallback.DisplayError(response.ErrorMessage);
+
 				return;
 			}
 
@@ -87,6 +88,11 @@ namespace MasterApi.Api
 			}
 
 			UpdateViewModel(response.ByteValues, readParams.StartAddress);
+		}
+
+		public void ClearResults()
+		{
+			readResultsViewModel.ReadResults = "";
 		}
 	}
 }

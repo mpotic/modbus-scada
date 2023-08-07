@@ -21,10 +21,13 @@ namespace MasterView
 
 		readonly IReadResultsViewModel readResultsViewModel;
 
+		readonly IReadApi readApi;
+
 		public ReadUserControl(IReadApi readApi, IReadResultsViewModel resultsViewModel)
 		{
 			InitializeComponent();
 
+			this.readApi = readApi;
 			actions = new Dictionary<ActionCode, IReadAction>
 			{
 				{ ActionCode.ReadDiscreteInputs, new ReadDiscreteInputsAction(readApi) },
@@ -36,7 +39,7 @@ namespace MasterView
 			ActionComboBox.ItemsSource = new List<ActionCode>()
 				{ ActionCode.ReadDiscreteInputs, ActionCode.ReadCoils, ActionCode.ReadAnalogInputs, ActionCode.ReadHolding };
 			ServiceTypeComboBox.ItemsSource = Enum.GetValues(typeof(ServiceTypeCode));
-			ServiceTypeComboBox.SelectedItem = ServiceTypeCode.ModbusService;
+			ServiceTypeComboBox.SelectedItem = ServiceTypeCode.TcpService;
 
 			readResultsViewModel = resultsViewModel;
 			ReadResultsTextBlock.DataContext = readResultsViewModel;
@@ -61,6 +64,11 @@ namespace MasterView
 			{
 				MessageBox.Show(exception.Message, "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+		}
+
+		private void ClearButton_Click(object sender, RoutedEventArgs e)
+		{
+			readApi.ClearResults();
 		}
 	}
 }

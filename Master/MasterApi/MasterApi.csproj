@@ -42,9 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ConnectionApi.cs" />
-    <Compile Include="Api\IConnectionApi.cs" />
-    <Compile Include="Api\IReadApi.cs" />
-    <Compile Include="Api\IWriteApi.cs" />
+    <Compile Include="Api\Interface\IConnectionApi.cs" />
+    <Compile Include="Api\Interface\IReadApi.cs" />
+    <Compile Include="Api\Interface\IWriteApi.cs" />
     <Compile Include="Api\ReadApi.cs" />
     <Compile Include="Api\WriteApi.cs" />
     <Compile Include="IMessageBoxCallback.cs" />
@@ -64,5 +64,6 @@
       <Name>MasterServices</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

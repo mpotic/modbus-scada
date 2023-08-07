@@ -33,7 +33,7 @@ namespace MasterView
 			arrayConverter = new ArrayConverter();
 			ActionComboBox.ItemsSource = new List<ActionCode> { ActionCode.WriteCoils, ActionCode.WriteHolding };
 			ServiceTypeComboBox.ItemsSource = Enum.GetValues(typeof(ServiceTypeCode));
-			ServiceTypeComboBox.SelectedItem = ServiceTypeCode.ModbusService;
+			ServiceTypeComboBox.SelectedItem = ServiceTypeCode.TcpService;
 		}
 
 		private void WriteButton_Click(object sender, RoutedEventArgs e)

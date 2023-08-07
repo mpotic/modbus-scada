@@ -12,6 +12,8 @@ namespace Common.Connection
 
 		Socket workingSocket;
 
+		int expectedPacketSize = 1024;
+
 		public bool IsConnected
 		{
 			get
@@ -57,22 +59,33 @@ namespace Common.Connection
 			workingSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 			IPEndPoint localEndpoint = new IPEndPoint(IPAddress.Loopback, localPort);
 			workingSocket.Bind(localEndpoint);
-
 			IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Loopback, remotePort);
 			await workingSocket.ConnectAsync(remoteEndpoint);
 		}
 
 		public async Task<byte[]> ReceiveAsync()
 		{
-			ArraySegment<byte> receiveBuffer = new ArraySegment<byte>(new byte[1024]);
-			int count = await workingSocket.ReceiveAsync(receiveBuffer, SocketFlags.None);
+			byte[] buffer = new byte[expectedPacketSize];
+			int count = 0;
 
-			return receiveBuffer.ToArray().Take(count).ToArray();
+			do
+			{
+				count += await workingSocket.ReceiveAsync(new ArraySegment<byte>(buffer, count, expectedPacketSize - count), SocketFlags.None);
+				
+				if(count == 0)
+				{
+					return new byte[0];
+				}
+			} while (count < expectedPacketSize);
+
+			return buffer;
 		}
 
 		public void Send(byte[] message)
 		{
-			workingSocket.Send(message);
+			byte[] buffer = new byte[expectedPacketSize];
+			message.Take(1024).ToArray().CopyTo(buffer, 0);
+			workingSocket.Send(buffer);
 		}
 
 		public void CloseAndUnbindWorkingSocket()

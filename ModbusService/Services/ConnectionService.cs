@@ -28,7 +28,7 @@ namespace ModbusService
 			IPEndPoint localEndpoint = new IPEndPoint(IPAddress.Loopback, connectionParams.LocalPort);
 			connection.TcpClient = new TcpClient(localEndpoint);
 			await connection.TcpClient.Client.ConnectAsync(IPAddress.Loopback, connectionParams.RemotePort);
-
+			connection.TcpClient.Client.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.ReuseAddress, true);
 			IModbusFactory factory = new ModbusFactory();
 			connection.ModbusMaster = factory.CreateMaster(connection.TcpClient);
 

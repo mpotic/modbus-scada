@@ -115,8 +115,8 @@ namespace Proxy
 				"Connect: \"{modbus/tcp} {localPort} {remotePort}\"\n" +
 				"Disconnect: \"disconnect {localPort}\"\n" +
 				"Listen: \"listen {localPort}\"\n" +
-				"Receive\\Send: \"receive {receivePort} {sendPort}\"" +
-				"List: \"list\"\n" +
+				"Receive\\Send: \"receive {receivePort} {sendPort}\"\n" +
+				"List ports in use: \"list\"\n" +
 				"Encrypt: \"encrypt {true/false}\"\n" +
 				"Sign: \"sign {true/false}\"\n" +
 			 	"Exit: \"exit\"\n" +

@@ -5,7 +5,6 @@ using Common.Enums;
 using System.Threading.Tasks;
 using TcpService;
 using Common.Callback;
-using System.Linq;
 
 namespace MasterServices
 {
@@ -41,8 +40,17 @@ namespace MasterServices
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadHolding);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 			
-			communicationService.Send(serializer.Message);
+			IResponse sendResponse = communicationService.Send(serializer.Message);
+			if (!sendResponse.IsSuccessful)
+			{
+				return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+			}
+
 			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
+			if (!tcpResponse.IsSuccessful)
+			{
+				return new ReadAnalogResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+			}
 
 			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
 			IReadAnalogResponse response = new ReadAnalogResponse(values);
@@ -56,8 +64,17 @@ namespace MasterServices
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadAnalogInputs);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			communicationService.Send(serializer.Message);
+			IResponse sendResponse = communicationService.Send(serializer.Message);
+			if (!sendResponse.IsSuccessful)
+			{
+				return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+			}
+
 			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
+			if (!tcpResponse.IsSuccessful)
+			{
+				return new ReadAnalogResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+			}
 
 			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
 			IReadAnalogResponse response = new ReadAnalogResponse(values);
@@ -71,8 +88,18 @@ namespace MasterServices
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadCoils);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			communicationService.Send(serializer.Message);
+			IResponse sendResponse = communicationService.Send(serializer.Message);
+			if (!sendResponse.IsSuccessful)
+			{
+				return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+			}
+
 			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
+			if (!tcpResponse.IsSuccessful)
+			{
+				return new ReadDiscreteResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+			}
+
 			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;
@@ -84,8 +111,19 @@ namespace MasterServices
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadDiscreteInputs);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
 
-			communicationService.Send(serializer.Message);
+
+			IResponse sendResponse = communicationService.Send(serializer.Message);
+			if (!sendResponse.IsSuccessful)
+			{
+				return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+			}
+
 			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
+			if (!tcpResponse.IsSuccessful)
+			{
+				return new ReadDiscreteResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+			}
+
 			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;

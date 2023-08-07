@@ -11,5 +11,7 @@ namespace MasterApi.Api
 		void ReadCoil(IReadParams readParams);
 
 		void ReadDiscreteInput(IReadParams readParams);
+		
+		void ClearResults();
 	}
 }

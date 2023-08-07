@@ -84,6 +84,7 @@ namespace Proxy
 			if (modbusConnection.Item1 == port)
 			{
 				modbusConnection.Item2.Connection.Disconnect();
+				Console.WriteLine($"Disconnected Modbus on port {port}.");
 
 				return;
 			}
@@ -94,7 +95,7 @@ namespace Proxy
 			}
 
 			connections[port].Connection.Disconnect();
-			Console.WriteLine($"Disconnected on port {port}.");
+			Console.WriteLine($"Disconnected TCP on port {port}.");
 			connections.Remove(port);
 		}
 
@@ -144,7 +145,9 @@ namespace Proxy
 			}
 
 			receiver.Receive(receiveConnection, sendConnection);
-		}
+            
+			Console.WriteLine($"Started receiving on \"{receivePort}\" and forwarding to\"{sendPort}\".");
+        }
 
 		public void ListAllConections()
 		{
