@@ -1,4 +1,5 @@
 ﻿using Common.DTO;
+using System;
 using System.Threading.Tasks;
 
 namespace TcpService
@@ -14,10 +15,15 @@ namespace TcpService
 
 		public async Task<ITcpReceiveResponse> Receive()
 		{
-			byte[] values = await connectionHandle.TcpSocket.ReceiveAsync();
-			ITcpReceiveResponse response = new TcpReceiveResponse(true, values);
-
-			return response;
+			try
+			{
+				byte[] values = await connectionHandle.TcpSocket.ReceiveAsync();
+				return new TcpReceiveResponse(true, values);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 		}
 
 		public IResponse Send(byte[] message)
@@ -25,6 +31,19 @@ namespace TcpService
 			connectionHandle.TcpSocket.Send(message);
 
 			return new Response(true);
+		}
+
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			try
+			{
+				byte[] values = await connectionHandle.TcpSocket.ReceiveWithTimeout();
+				return new TcpReceiveResponse(true, values);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 		}
 	}
 }

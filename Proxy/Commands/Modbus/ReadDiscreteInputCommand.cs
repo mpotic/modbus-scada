@@ -2,14 +2,14 @@
 using Common.DTO;
 using Common.Enums;
 using Proxy.Connections;
+using System;
+using System.Threading.Tasks;
 
 namespace Proxy.Commands
 {
-	internal class ReadDiscreteInputCommand : IModbusCommand
+	internal class ReadDiscreteInputCommand : IModbusReadCommand
 	{
 		private ITcpSerializer serializer;
-
-		private ITcpConnection proxy;
 
 		private readonly IModbusConnection slave;
 
@@ -18,29 +18,35 @@ namespace Proxy.Commands
 			this.slave = slave;
 		}
 
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
+		public void SetParams(ITcpSerializer serializer)
 		{
 			this.serializer = serializer;
-			proxy = (ITcpConnection)connection;
 		}
 
-		public async void Execute()
-        {
-            byte slaveAddress = serializer.ReadSlaveAddressFromBody();
-            ushort startAddress = serializer.ReadStartAddressFromBody();
-            ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
+		public async Task Execute()
+		{
+			byte slaveAddress = serializer.ReadSlaveAddressFromBody();
+			ushort startAddress = serializer.ReadStartAddressFromBody();
+			ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
 			IReadParams readParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
-            IReadDiscreteResponse response = await slave.Rtu.ReadDiscreteInput(readParams);
 
-            SendResponse(response.BoolValues);
-        }
+			try
+			{
+				IReadDiscreteResponse response = await slave.Rtu.ReadDiscreteInput(readParams);
+				FormatResponse(response.BoolValues);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
 
-        private void SendResponse(bool[] values)
-        {
-            serializer.InitMessage();
-            serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadDiscreteInputs);
-            serializer.AddBody(values);
-            proxy.Communication.Send(serializer.Message);
-        }
-    }
+		private void FormatResponse(bool[] values)
+		{
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadDiscreteInputs);
+			serializer.AddBody(values);
+			serializer.AddSizeToHeader();
+		}
+	}
 }

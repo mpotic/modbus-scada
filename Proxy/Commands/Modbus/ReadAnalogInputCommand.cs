@@ -2,14 +2,14 @@
 using Common.DTO;
 using Common.Enums;
 using Proxy.Connections;
+using System;
+using System.Threading.Tasks;
 
 namespace Proxy.Commands
 {
-	internal class ReadAnalogInputCommand : IModbusCommand
+	internal class ReadAnalogInputCommand : IModbusReadCommand
     {
         private ITcpSerializer serializer;
-
-        private ITcpConnection proxy;
 
         private readonly IModbusConnection slave;
 
@@ -18,29 +18,35 @@ namespace Proxy.Commands
             this.slave = slave;
         }
 
-        public void SetParams(IConnection proxy, ITcpSerializer serializer)
+        public void SetParams(ITcpSerializer serializer)
         {
-            this.proxy = (ITcpConnection)proxy;
             this.serializer = serializer;
         }
 
-        public async void Execute()
+        public async Task Execute()
         {
             byte slaveAddress = serializer.ReadSlaveAddressFromBody();
             ushort startAddress = serializer.ReadStartAddressFromBody();
             ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
             IReadParams readParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
-            IReadAnalogResponse response = await slave.Rtu.ReadAnalogInput(readParams);
 
-            SendResponse(response.Values);
+            try
+            {
+				IReadAnalogResponse response = await slave.Rtu.ReadAnalogInput(readParams);
+				FormatResponse(response.Values);
+			}
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
-        private void SendResponse(ushort[] values)
+        private void FormatResponse(ushort[] values)
         {
             serializer.InitMessage();
             serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadAnalogInputs);
             serializer.AddBody(values);
-            proxy.Communication.Send(serializer.Message);
+			serializer.AddSizeToHeader();
         }
 	}
 }

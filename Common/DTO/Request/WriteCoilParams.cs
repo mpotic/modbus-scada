@@ -1,5 +1,6 @@
 ﻿using Common.Enums;
 using Common.Util;
+using System;
 
 namespace Common.DTO
 {
@@ -8,43 +9,35 @@ namespace Common.DTO
 		public WriteCoilParams(byte slaveAddress, ushort startAddress, byte[] writeValues, ServiceTypeCode serviceType)
 		{
 			ServiceType = serviceType;
-			IByteArrayConverter converter = new ByteArrayConverter();
 			SlaveAddress = slaveAddress;
 			StartAddress = startAddress;
-			WriteValues = converter.ConvertToBoolArray(writeValues);
-		}
-
-		public WriteCoilParams(byte slaveAddress, ushort startAddress, bool[] writeValues, ServiceTypeCode serviceType)
-		{
-			ServiceType = serviceType;
-			SlaveAddress = slaveAddress;
-			StartAddress = startAddress;
-			WriteValues = writeValues;
-		}
-
-		public WriteCoilParams(byte slaveAddress, ushort startAddress, byte[] writeValues)
-		{
-			ServiceType = ServiceTypeCode.ModbusService;
-			IByteArrayConverter converter = new ByteArrayConverter();
-			SlaveAddress = slaveAddress;
-			StartAddress = startAddress;
-			WriteValues = converter.ConvertToBoolArray(writeValues);
+			ByteWriteValues = writeValues;
 		}
 
 		public WriteCoilParams(byte slaveAddress, ushort startAddress, bool[] writeValues)
 		{
+			IByteArrayConverter converter = new ByteArrayConverter();
 			ServiceType = ServiceTypeCode.ModbusService;
 			SlaveAddress = slaveAddress;
 			StartAddress = startAddress;
-			WriteValues = writeValues;
+			ByteWriteValues = converter.ConvertToByteArray(writeValues);
 		}
 
 		public ServiceTypeCode ServiceType { get; set; }
 
 		public byte SlaveAddress { get; set; }
-	
+
 		public ushort StartAddress { get; set; }
-		
-		public bool[] WriteValues { get; set; }
+
+		public byte[] ByteWriteValues { get; set; }
+
+		public bool[] BoolWriteValues
+		{
+			get
+			{
+				IByteArrayConverter converter = new ByteArrayConverter();
+				return converter.ConvertToBoolArray(ByteWriteValues);
+			}
+		}
 	}
 }

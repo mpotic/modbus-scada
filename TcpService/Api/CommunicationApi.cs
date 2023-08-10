@@ -17,6 +17,11 @@ namespace TcpService
 			return await socketAccess.Receive();
 		}
 
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await socketAccess.ReceiveWithTimeout();
+		}
+
 		public IResponse Send(byte[] message)
 		{
 			return socketAccess.Send(message);

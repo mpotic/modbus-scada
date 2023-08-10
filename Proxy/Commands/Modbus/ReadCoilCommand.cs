@@ -2,45 +2,51 @@
 using Common.DTO;
 using Common.Enums;
 using Proxy.Connections;
+using System;
+using System.Threading.Tasks;
 
 namespace Proxy.Commands
 {
-	internal class ReadCoilCommand : IModbusCommand
+	internal class ReadCoilCommand : IModbusReadCommand
 	{
 		private ITcpSerializer serializer;
-
-		private ITcpConnection proxy;
 
 		private readonly IModbusConnection slave;
 
 		public ReadCoilCommand(IModbusConnection slave)
-        {
-            this.slave = slave;
-        }
-
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
 		{
-            proxy = (ITcpConnection)connection;
-            this.serializer = serializer;
+			this.slave = slave;
 		}
 
-		public async void Execute()
-        {
-            byte slaveAddress = serializer.ReadSlaveAddressFromBody();
-            ushort startAddress = serializer.ReadStartAddressFromBody();
-            ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
-            IReadParams readParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
-            IReadDiscreteResponse response = await slave.Rtu.ReadCoil(readParams);
+		public void SetParams(ITcpSerializer serializer)
+		{
+			this.serializer = serializer;
+		}
 
-            SendResponse(response.BoolValues);
-        }
+		public async Task Execute()
+		{
+			byte slaveAddress = serializer.ReadSlaveAddressFromBody();
+			ushort startAddress = serializer.ReadStartAddressFromBody();
+			ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
+			IReadParams readParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
 
-        private void SendResponse(bool[] values)
-        {
-            serializer.InitMessage();
-            serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadCoils);
-            serializer.AddBody(values);
-            proxy.Communication.Send(serializer.Message);
-        }
+			try
+			{
+				IReadDiscreteResponse response = await slave.Rtu.ReadCoil(readParams);
+				FormatResponse(response.BoolValues);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
+
+		private void FormatResponse(bool[] values)
+		{
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadCoils);
+			serializer.AddBody(values);
+			serializer.AddSizeToHeader();
+		}
 	}
 }

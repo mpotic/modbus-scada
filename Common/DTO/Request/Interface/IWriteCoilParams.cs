@@ -6,6 +6,8 @@
 
 		ushort StartAddress { get; set; }
 
-		bool[] WriteValues { get; set; }
+		byte[] ByteWriteValues { get; set; }
+
+		bool[] BoolWriteValues { get; }
 	}
 }

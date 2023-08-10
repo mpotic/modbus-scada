@@ -1,45 +1,82 @@
 ﻿using Common.Connection;
 using Common.Enums;
 using Proxy.Connections;
+using Proxy.Security;
+using System;
 using System.Collections.Generic;
 
 namespace Proxy.Commands
 {
-	class ProxyToSlaveMessageCommand : IMessageCommand
+	sealed class ProxyToSlaveMessageCommand : IMessageCommand
 	{
-		private readonly Dictionary<FunctionCode, IModbusCommand> modbusFunctions;
+		private readonly Dictionary<FunctionCode, IModbusReadCommand> modbusReadFunctions;
 
-        private ITcpSerializer serializer;
+		private readonly Dictionary<FunctionCode, IModbusWriteCommand> modbusWriteFunction;
 
-        private ITcpConnection proxy;
+		private ITcpSerializer serializer;
 
-        private readonly IModbusConnection slave;
+		private ITcpConnection proxy;
 
-		public ProxyToSlaveMessageCommand(IModbusConnection slave)
+		private ISecurity security;
+
+		public ProxyToSlaveMessageCommand(IModbusConnection slave, ISecurity security = null)
 		{
-            this.slave = slave;
-            modbusFunctions = new Dictionary<FunctionCode, IModbusCommand>
-            {
-                { FunctionCode.ReadCoils, new ReadCoilCommand(slave) },
-                { FunctionCode.ReadHolding, new ReadHoldingCommand(slave) },
-                { FunctionCode.ReadDiscreteInputs, new ReadDiscreteInputCommand(slave) },
-                { FunctionCode.ReadAnalogInputs, new ReadAnalogInputCommand(slave) },
-                { FunctionCode.WriteCoils, new WriteCoilCommand(slave) },
-                { FunctionCode.WriteHolding, new WriteHoldingCommand(slave) }
-            };
-        }
+			modbusReadFunctions = new Dictionary<FunctionCode, IModbusReadCommand>
+			{
+				{ FunctionCode.ReadCoils, new ReadCoilCommand(slave) },
+				{ FunctionCode.ReadHolding, new ReadHoldingCommand(slave) },
+				{ FunctionCode.ReadDiscreteInputs, new ReadDiscreteInputCommand(slave) },
+				{ FunctionCode.ReadAnalogInputs, new ReadAnalogInputCommand(slave) },
+			};
 
-        public void SetParams(IConnection connection, ITcpSerializer serializer)
-        {
-            proxy = (ITcpConnection)connection;
-            this.serializer = serializer;
-        }
+			modbusWriteFunction = new Dictionary<FunctionCode, IModbusWriteCommand>
+			{
+				{ FunctionCode.WriteCoils, new WriteCoilCommand(slave) },
+				{ FunctionCode.WriteHolding, new WriteHoldingCommand(slave) }
+			};
 
-        public void Execute()
+			this.security = security;
+		}
+
+		public void SetParams(IConnection connection, ITcpSerializer serializer)
 		{
-            FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
-            modbusFunctions[requestCode].SetParams(proxy, serializer);
-			modbusFunctions[requestCode].Execute();
-        }
+			proxy = (ITcpConnection)connection;
+			this.serializer = serializer;
+		}
+
+		public void Execute()
+		{
+			FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
+
+			if (modbusWriteFunction.TryGetValue(requestCode, out IModbusWriteCommand writeCommand))
+			{
+				ExecuteWrite(writeCommand);
+			}
+			else if (modbusReadFunctions.TryGetValue(requestCode, out IModbusReadCommand readCommand))
+			{
+				ExecuteRead(readCommand);
+			}
+		}
+
+		public async void ExecuteRead(IModbusReadCommand command)
+		{
+			command.SetParams(serializer);
+			
+			try
+			{
+				await command.Execute();
+				proxy.Communication.Send(serializer.Message);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Modbus read operation failed! " + e.Message);
+            }
+		}
+
+		public void ExecuteWrite(IModbusWriteCommand command)
+		{
+			command.SetParams(serializer);
+			command.Execute();
+		}
 	}
 }

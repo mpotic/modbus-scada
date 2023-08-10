@@ -30,15 +30,7 @@ namespace Proxy
 			while (true)
 			{
 				string read = Console.ReadLine();
-
-				try
-				{
-					Task.Run(() => { ProcessInput(read); });
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message);
-				}
+				Task.Run(() => { ProcessInput(read); });
 			}
 		}
 

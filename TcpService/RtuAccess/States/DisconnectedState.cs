@@ -92,5 +92,10 @@ namespace TcpService
 		{
 			return new Response(false, "There is no established connection!");
 		}
+
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await Task.FromResult(new TcpReceiveResponse(false, "There is no established connection!"));
+		}
 	}
 }

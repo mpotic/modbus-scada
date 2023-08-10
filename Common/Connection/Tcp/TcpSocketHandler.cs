@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Common.Connection
@@ -77,6 +78,32 @@ namespace Common.Connection
 					return new byte[0];
 				}
 			} while (count < expectedPacketSize);
+
+			return buffer;
+		}
+
+		public async Task<byte[]> ReceiveWithTimeout()
+		{
+			byte[] buffer = new byte[0];
+			DateTime startTime = DateTime.UtcNow;
+			TimeSpan timeout = TimeSpan.FromSeconds(3);
+
+			while (true)
+			{
+				TimeSpan elapsed = DateTime.UtcNow - startTime;
+				if (elapsed >= timeout)
+				{
+					break;
+				}
+
+				if (workingSocket.Poll(1000, SelectMode.SelectRead))
+				{
+					buffer = await ReceiveAsync();
+					break;
+				}
+
+				Thread.Sleep(10);
+			}
 
 			return buffer;
 		}

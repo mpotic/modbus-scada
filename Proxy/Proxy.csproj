@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Modbus\IModbusCommand.cs" />
+    <Compile Include="Commands\Modbus\Interface\IModbusCommand.cs" />
+    <Compile Include="Commands\Modbus\Interface\IModbusReadCommand.cs" />
+    <Compile Include="Commands\Modbus\Interface\IModbusWriteCommand.cs" />
     <Compile Include="Commands\Modbus\ReadAnalogInputCommand.cs" />
     <Compile Include="Commands\Modbus\ReadCoilCommand.cs" />
     <Compile Include="Commands\Modbus\ReadDiscreteInputCommand.cs" />
@@ -67,6 +69,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main\ProxyWorker.cs" />
     <Compile Include="Main\Receiver.cs" />
+    <Compile Include="Security\Encryption\AesEncryption.cs" />
+    <Compile Include="Security\Encryption\IEncryption.cs" />
+    <Compile Include="Security\ISecurity.cs" />
+    <Compile Include="Security\Security.cs" />
+    <Compile Include="Security\Signature\ISignature.cs" />
+    <Compile Include="Security\Signature\Signature.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -85,8 +93,6 @@
       <Name>TcpService</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\Message\Factory\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

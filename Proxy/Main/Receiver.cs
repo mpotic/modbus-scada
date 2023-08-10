@@ -6,7 +6,6 @@ using Proxy.Connections;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Proxy
 {
@@ -26,7 +25,7 @@ namespace Proxy
 
 		public async void Receive(ITcpConnection receiveConnection, ITcpConnection sendConnection)
 		{
-			ITcpSerializer message = new TcpSerializer();
+			ITcpSerializer messageSerializer = new TcpSerializer();
 
 			while (true)
 			{
@@ -46,10 +45,10 @@ namespace Proxy
 						throw new Exception(response.ErrorMessage);
 					}
 
-					PrintReceivedMessage(response.Payload);
-					message.InitMessage(response.Payload);
-					SenderCode senderCode = message.ReadSenderCodeFromHeader();
-					processingCommand[senderCode].SetParams(sendConnection, message);
+					messageSerializer.InitMessage(response.Payload);
+                    Console.WriteLine(messageSerializer);
+                    SenderCode senderCode = messageSerializer.ReadSenderCodeFromHeader();
+					processingCommand[senderCode].SetParams(sendConnection, messageSerializer);
 					processingCommand[senderCode].Execute();
 				}
 				catch (SocketException ex)
@@ -63,11 +62,6 @@ namespace Proxy
 					Console.WriteLine(e.Message);
 				}
 			}
-		}
-
-		private void PrintReceivedMessage(byte[] message)
-		{
-			Console.WriteLine(Encoding.UTF8.GetString(message));
 		}
 	}
 }

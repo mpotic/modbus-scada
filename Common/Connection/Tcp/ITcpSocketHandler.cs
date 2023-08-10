@@ -19,7 +19,9 @@ namespace Common.Connection
 
 		Task<byte[]> ReceiveAsync();
 
-        void Send(byte[] message);
+        Task<byte[]> ReceiveWithTimeout();
+
+		void Send(byte[] message);
 
         void CloseAndUnbindWorkingSocket();
 

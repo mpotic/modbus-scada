@@ -101,17 +101,17 @@ namespace Proxy
 
 		public async void Listen(int port)
 		{
-			if (connections.ContainsKey(port))
-			{
-				throw new Exception("Port already in use!");
-			}
-
-			IConnectionParams connectionParams = new ConnectionParams(port);
-			ITcpServiceHandler serviceHandler = new TcpServiceHandler();
-			Console.WriteLine($"Listening on {port}.");
-
 			try
 			{
+				if (connections.ContainsKey(port))
+				{
+					throw new Exception("Port already in use!");
+				}
+
+				IConnectionParams connectionParams = new ConnectionParams(port);
+				ITcpServiceHandler serviceHandler = new TcpServiceHandler();
+				Console.WriteLine($"Listening on {port}.");
+
 				IResponse response = await serviceHandler.ConnectionApi.Listen(connectionParams);
 				if (!response.IsSuccessful)
 				{
@@ -130,24 +130,24 @@ namespace Proxy
 		public void Receive(int receivePort, int sendPort)
 		{
 			ITcpConnection receiveConnection;
-			connections.TryGetValue(receivePort,out receiveConnection);
+			connections.TryGetValue(receivePort, out receiveConnection);
 			ITcpConnection sendConnection;
 			connections.TryGetValue(sendPort, out sendConnection);
 
-			if(receiveConnection == null)
+			if (receiveConnection == null)
 			{
 				throw new Exception($"Port {receivePort} not connected!");
 			}
 
-			if(sendConnection == null)
+			if (sendConnection == null)
 			{
 				throw new Exception($"Port {sendPort} not connected!");
 			}
 
 			receiver.Receive(receiveConnection, sendConnection);
-            
+
 			Console.WriteLine($"Started receiving on \"{receivePort}\" and forwarding to\"{sendPort}\".");
-        }
+		}
 
 		public void ListAllConections()
 		{

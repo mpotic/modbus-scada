@@ -29,5 +29,10 @@ namespace TcpService
 		{
 			return new Response(false, "Connection attempt in progress! Please wait.");
 		}
+
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await Task.FromResult(new TcpReceiveResponse(false, "Connection attempt in progress! Please wait."));
+		}
 	}
 }

@@ -59,8 +59,7 @@ namespace ModbusService
 
 		public IResponse WriteCoil(IWriteCoilParams writeParams)
 		{
-			connection.ModbusMaster.WriteMultipleCoils(
-				writeParams.SlaveAddress, writeParams.StartAddress, writeParams.WriteValues);
+			connection.ModbusMaster.WriteMultipleCoils(writeParams.SlaveAddress, writeParams.StartAddress, writeParams.BoolWriteValues);
 			IResponse response = new Response(true);
 
 			return response;

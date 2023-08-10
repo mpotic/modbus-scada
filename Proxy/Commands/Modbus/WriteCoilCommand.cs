@@ -1,10 +1,12 @@
 ﻿using Common.Connection;
 using Common.DTO;
+using Common.Util;
 using Proxy.Connections;
+using System;
 
 namespace Proxy.Commands
 {
-	internal class WriteCoilCommand : IModbusCommand
+	internal class WriteCoilCommand : IModbusWriteCommand
 	{
 		private ITcpSerializer serializer;
 
@@ -15,7 +17,7 @@ namespace Proxy.Commands
 			this.slave = slave;
 		}
 
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
+		public void SetParams(ITcpSerializer serializer)
 		{
 			this.serializer = serializer;
 		}
@@ -24,9 +26,18 @@ namespace Proxy.Commands
 		{
 			byte slaveAddress = serializer.ReadSlaveAddressFromBody();
 			ushort startAddress = serializer.ReadStartAddressFromBody();
-			bool[] writeValues = serializer.ReadCoilWriteValuesFromBody();
-			IWriteCoilParams writeParams = new WriteCoilParams(slaveAddress, startAddress, writeValues);
-			slave.Rtu.WriteCoil(writeParams);
+			byte[] writeValues = serializer.ReadCoilWriteValuesFromBody();
+			IByteArrayConverter converter = new ByteArrayConverter();
+
+			try
+			{
+				IWriteCoilParams writeParams = new WriteCoilParams(slaveAddress, startAddress, converter.ConvertToBoolArray(writeValues));
+				slave.Rtu.WriteCoil(writeParams);
+			}
+			catch (Exception e)
+			{
+                Console.WriteLine("Modbus write operation failed! " + e.Message);
+            }
 		}
 	}
 }

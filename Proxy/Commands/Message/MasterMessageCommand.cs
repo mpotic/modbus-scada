@@ -20,6 +20,7 @@ namespace Proxy.Commands
         {
             FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
             serializer.ReplaceHeader(SenderCode.ProxyToSlave, requestCode);
+            serializer.AddSizeToHeader();
             connection.Communication.Send(serializer.Message);
         }
     }

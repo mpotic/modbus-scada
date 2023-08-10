@@ -41,6 +41,11 @@ namespace TcpService
 			return await state.Receive();
 		}
 
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await state.ReceiveWithTimeout();
+		}
+
 		public IResponse Send(byte[] message)
 		{
 			return state.Send(message);

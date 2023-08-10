@@ -24,14 +24,20 @@ namespace Common.Connection
         void InitMessage(byte[] message);
 
         /// <summary>
-        /// Replaces the existing header with given sender code and request code.
+        /// Adds current size of the message to header.
         /// </summary>
-        void ReplaceHeader(SenderCode senderCode, FunctionCode requestCode);
+        void AddSizeToHeader();
 
-        /// <summary>
-        /// Adds the header to the message.
-        /// </summary>
-        void AddHeader(SenderCode senderCode, FunctionCode requestCode);
+		/// <summary>
+		/// Adds the header to the message.
+		/// </summary>
+		void AddHeader(SenderCode senderCode, FunctionCode requestCode);
+
+		/// <summary>
+		/// Replaces the existing header with given sender code and request code. Previous header is completely removed and replaced with
+        /// provided SenderCode and FunctionCode.
+		/// </summary>
+		void ReplaceHeader(SenderCode senderCode, FunctionCode requestCode);
 
         /// <summary>
         /// Adds body with slave address, start address, and number of points.
@@ -49,19 +55,35 @@ namespace Common.Connection
         void AddBody(byte slaveAddress, ushort startAddress, bool[] writeValues);
 
         /// <summary>
-        /// Ads body that contains the values.
+        /// Adds body with slave address, start address, and byte array writeValues.
         /// </summary>
-        void AddBody(ushort[] values);
+        void AddBody(byte slaveAddress, ushort startAddress, byte[] writeValues);
+
+		/// <summary>
+		/// Ads body that contains only the values.
+		/// </summary>
+		void AddBody(ushort[] values);
 
         /// <summary>
-        /// Ads body that contains the values.
+        /// Ads body that contains only the values.
         /// </summary>
         void AddBody(bool[] values);
 
-        /// <summary>
-        /// Reads SenderCode from the message header.
-        /// </summary>
-        SenderCode ReadSenderCodeFromHeader();
+		/// <summary>
+		/// Ads body that contains only the values.
+		/// </summary>
+		void AddBody(byte[] values);
+
+		/// <summary>
+		/// Reads the size of the message from message header.
+		/// </summary>
+		/// <returns></returns>
+		int ReadSizeFromHeader();
+
+		/// <summary>
+		/// Reads SenderCode from the message header.
+		/// </summary>
+		SenderCode ReadSenderCodeFromHeader();
 
         /// <summary>
         /// Reads ModbusRequestCode from the message header.
@@ -89,18 +111,23 @@ namespace Common.Connection
         ushort[] ReadHoldingWriteValuesFromBody();
 
         /// <summary>
-        /// Reads bool array WriteValues from the message body.
+        /// Reads byte array WriteValues from the message body.
         /// </summary>
-        bool[] ReadCoilWriteValuesFromBody();
+        byte[] ReadCoilWriteValuesFromBody();
 
-        /// <summary>
-        /// Reads the discrete values previously acquired from slave. 
-        /// </summary>
-        bool[] ReadDiscreteReadValuesFromBody();
+		/// <summary>
+		/// Reads the discrete values previously acquired from slave. 
+		/// </summary>
+		bool[] ReadDiscreteReadValuesFromBody();
 
         /// <summary>
         /// Reads the analog values previously acquired from slave. 
         /// </summary>
         ushort[] ReadAnalogReadValuesFromBody();
-    }
+
+        /// <summary>
+        /// Returns the string representation of the Message as UTF8 encoding. 
+        /// </summary>
+        string ToString();
+	}
 }

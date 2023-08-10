@@ -5,6 +5,8 @@ using Common.Enums;
 using System.Threading.Tasks;
 using TcpService;
 using Common.Callback;
+using System;
+using System.Diagnostics;
 
 namespace MasterServices
 {
@@ -16,8 +18,6 @@ namespace MasterServices
 
 		ITcpSerializer serializer = new TcpSerializer();
 
-		IByteArrayConverter converter = new ByteArrayConverter();
-
 		public TcpServiceProvider(ITcpServiceHandler tcpServiceHandler)
 		{
 			communicationService = tcpServiceHandler.CommunicationApi;
@@ -26,12 +26,26 @@ namespace MasterServices
 
 		public async Task<IResponse> Connect(IConnectionParams connectionParams)
 		{
-			return await connectionService.Connect(connectionParams);
+			try
+			{
+				return await connectionService.Connect(connectionParams);
+			}
+			catch(Exception e)
+			{
+				return new Response(false, "Connect request failed! " + e.Message);
+			}
 		}
 
 		public IResponse Disconnect()
 		{
-			return connectionService.Disconnect();
+			try
+			{
+				return connectionService.Disconnect();
+			}
+			catch (Exception e)
+			{
+				return new Response(false, "Disconnect request failed! " + e.Message);
+			}
 		}
 
 		public async Task<IReadAnalogResponse> ReadHolding(IReadParams readParams)
@@ -39,21 +53,30 @@ namespace MasterServices
 			serializer.InitMessage();
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadHolding);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
-			
-			IResponse sendResponse = communicationService.Send(serializer.Message);
-			if (!sendResponse.IsSuccessful)
-			{
-				return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
-			}
+			serializer.AddSizeToHeader();
 
-			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
-			if (!tcpResponse.IsSuccessful)
+			IReadAnalogResponse response;
+			try
 			{
-				return new ReadAnalogResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
-			}
+				IResponse sendResponse = communicationService.Send(serializer.Message);
+				if (!sendResponse.IsSuccessful)
+				{
+					return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+				}
 
-			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
-			IReadAnalogResponse response = new ReadAnalogResponse(values);
+				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
+				if (!receiveResponse.IsSuccessful)
+				{
+					return new ReadAnalogResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+				}
+
+				serializer.InitMessage(receiveResponse.Payload);
+				response = new ReadAnalogResponse(serializer.ReadAnalogReadValuesFromBody());
+			}
+			catch(Exception e)
+			{
+				response = new ReadAnalogResponse(false, "Read holding request failed! " + e.Message);
+			}
 
 			return response;
 		}
@@ -63,21 +86,30 @@ namespace MasterServices
 			serializer.InitMessage();
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadAnalogInputs);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.AddSizeToHeader();
 
-			IResponse sendResponse = communicationService.Send(serializer.Message);
-			if (!sendResponse.IsSuccessful)
+			IReadAnalogResponse response;
+			try
 			{
-				return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
-			}
+				IResponse sendResponse = communicationService.Send(serializer.Message);
+				if (!sendResponse.IsSuccessful)
+				{
+					return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+				}
 
-			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
-			if (!tcpResponse.IsSuccessful)
+				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
+				if (!receiveResponse.IsSuccessful)
+				{
+					return new ReadAnalogResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+				}
+
+				serializer.InitMessage(receiveResponse.Payload);
+				response = new ReadAnalogResponse(serializer.ReadAnalogReadValuesFromBody());
+			}
+			catch (Exception e)
 			{
-				return new ReadAnalogResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+				response = new ReadAnalogResponse(false, "Read analog input request failed! " +  e.Message);
 			}
-
-			ushort[] values = converter.ConvertToUshortArray(tcpResponse.Payload);
-			IReadAnalogResponse response = new ReadAnalogResponse(values);
 
 			return response;
 		}
@@ -87,20 +119,30 @@ namespace MasterServices
 			serializer.InitMessage();
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadCoils);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.AddSizeToHeader();
 
-			IResponse sendResponse = communicationService.Send(serializer.Message);
-			if (!sendResponse.IsSuccessful)
+			IReadDiscreteResponse response;
+			try
 			{
-				return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
-			}
+				IResponse sendResponse = communicationService.Send(serializer.Message);
+				if (!sendResponse.IsSuccessful)
+				{
+					return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+				}
 
-			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
-			if (!tcpResponse.IsSuccessful)
+				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
+				if (!receiveResponse.IsSuccessful)
+				{
+					return new ReadDiscreteResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+				}
+
+				serializer.InitMessage(receiveResponse.Payload);
+				response = new ReadDiscreteResponse(serializer.ReadDiscreteReadValuesFromBody());
+			}
+			catch (Exception e)
 			{
-				return new ReadDiscreteResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+				response = new ReadDiscreteResponse(false, "Read coils request failed! " + e.Message);
 			}
-
-			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;
 		}
@@ -110,37 +152,70 @@ namespace MasterServices
 			serializer.InitMessage();
 			serializer.AddHeader(SenderCode.Master, FunctionCode.ReadDiscreteInputs);
 			serializer.AddBody(readParams.SlaveAddress, readParams.StartAddress, readParams.NumberOfPoints);
+			serializer.AddSizeToHeader();
 
-
-			IResponse sendResponse = communicationService.Send(serializer.Message);
-			if (!sendResponse.IsSuccessful)
+			IReadDiscreteResponse response;
+			try
 			{
-				return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
-			}
+				IResponse sendResponse = communicationService.Send(serializer.Message);
+				if (!sendResponse.IsSuccessful)
+				{
+					return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+				}
 
-			ITcpReceiveResponse tcpResponse = await communicationService.Receive();
-			if (!tcpResponse.IsSuccessful)
+				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
+				if (!receiveResponse.IsSuccessful)
+				{
+					return new ReadDiscreteResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+				}
+
+				serializer.InitMessage(receiveResponse.Payload);
+				response = new ReadDiscreteResponse(serializer.ReadDiscreteReadValuesFromBody());
+			}
+			catch (Exception e)
 			{
-				return new ReadDiscreteResponse(tcpResponse.IsSuccessful, tcpResponse.ErrorMessage);
+				response = new ReadDiscreteResponse(false, "Read discrete input request failed! " + e.Message);
 			}
-
-			IReadDiscreteResponse response = new ReadDiscreteResponse(tcpResponse.Payload);
 
 			return response;
 		}
 
 		public IResponse WriteHolding(IWriteHoldingParams writeParams)
 		{
-			byte[] values = converter.ConvertToByteArray(writeParams.WriteValues);
-			IResponse response = communicationService.Send(values);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.WriteHolding);
+			serializer.AddBody(writeParams.SlaveAddress, writeParams.StartAddress, writeParams.WriteValues);
+			serializer.AddSizeToHeader();
+
+			IResponse response;
+			try
+			{
+				response = communicationService.Send(serializer.Message);
+			}
+			catch (Exception e)
+			{
+				response = new Response(false, "Write holding request failed! " + e.Message);
+			}
 
 			return response;
 		}
 
 		public IResponse WriteCoil(IWriteCoilParams writeParams)
 		{
-			byte[] values = converter.ConvertToByteArray(writeParams.WriteValues);
-			IResponse response = communicationService.Send(values);
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.Master, FunctionCode.WriteCoils);
+			serializer.AddBody(writeParams.SlaveAddress, writeParams.StartAddress, writeParams.ByteWriteValues);
+			serializer.AddSizeToHeader();
+
+			IResponse response;
+			try
+			{
+				response = communicationService.Send(serializer.Message);
+			}
+			catch (Exception e)
+			{
+				response = new Response(false, "Write coils request failed! " + e.Message);
+			}
 
 			return response;
 		}

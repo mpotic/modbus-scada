@@ -2,14 +2,14 @@
 using Common.DTO;
 using Common.Enums;
 using Proxy.Connections;
+using System;
+using System.Threading.Tasks;
 
 namespace Proxy.Commands
 {
-	internal class ReadHoldingCommand : IModbusCommand
+	internal class ReadHoldingCommand : IModbusReadCommand
 	{
 		private ITcpSerializer serializer;
-
-		private ITcpConnection proxy;
 
 		private readonly IModbusConnection slave;
 
@@ -18,29 +18,35 @@ namespace Proxy.Commands
 			this.slave = slave;
 		}
 
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
+		public void SetParams(ITcpSerializer serializer)
 		{
 			this.serializer = serializer;
-			proxy = (ITcpConnection)connection;
 		}
 
-		public async void Execute()
-        {
-            byte slaveAddress = serializer.ReadSlaveAddressFromBody();
-            ushort startAddress = serializer.ReadStartAddressFromBody();
-            ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
-            IReadParams holdingParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
-            IReadAnalogResponse response= await slave.Rtu.ReadHolding(holdingParams);
+		public async Task Execute()
+		{
+			byte slaveAddress = serializer.ReadSlaveAddressFromBody();
+			ushort startAddress = serializer.ReadStartAddressFromBody();
+			ushort numberOfPoints = serializer.ReadNumberOfPointsFromBody();
+			IReadParams holdingParams = new ReadParams(slaveAddress, startAddress, numberOfPoints);
 
-            SendResponse(response.Values);
-        }
+			try
+			{
+				IReadAnalogResponse response = await slave.Rtu.ReadHolding(holdingParams);
+				FormatResponse(response.Values);
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
+		}
 
-        private void SendResponse(ushort[] values)
-        {
-            serializer.InitMessage();
-            serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadHolding);
-            serializer.AddBody(values);
-            proxy.Communication.Send(serializer.Message);
-        }
+		private void FormatResponse(ushort[] values)
+		{
+			serializer.InitMessage();
+			serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadHolding);
+			serializer.AddBody(values);
+			serializer.AddSizeToHeader();
+		}
 	}
 }
