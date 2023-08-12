@@ -13,13 +13,13 @@ namespace Proxy.Commands
 
 		private readonly Dictionary<FunctionCode, IModbusWriteCommand> modbusWriteFunction;
 
-		private ITcpSerializer serializer;
-
 		private ITcpConnection proxy;
 
-		private ISecurity security;
+		private byte[] message;
 
-		public ProxyToSlaveMessageCommand(IModbusConnection slave, ISecurity security = null)
+		private readonly ISecurityHandler security;
+
+		public ProxyToSlaveMessageCommand(IModbusConnection slave, ISecurityHandler security)
 		{
 			modbusReadFunctions = new Dictionary<FunctionCode, IModbusReadCommand>
 			{
@@ -38,34 +38,36 @@ namespace Proxy.Commands
 			this.security = security;
 		}
 
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
+		public void SetParams(IConnection connection, byte[] message)
 		{
 			proxy = (ITcpConnection)connection;
-			this.serializer = serializer;
+			this.message = message;
 		}
 
 		public void Execute()
 		{
+			ITcpSerializer serializer = new TcpSerializer();
+			serializer.InitMessage(message);
 			FunctionCode requestCode = serializer.ReadFunctionCodeFromHeader();
-
 			if (modbusWriteFunction.TryGetValue(requestCode, out IModbusWriteCommand writeCommand))
 			{
-				ExecuteWrite(writeCommand);
+				ExecuteWrite(writeCommand, serializer);
 			}
 			else if (modbusReadFunctions.TryGetValue(requestCode, out IModbusReadCommand readCommand))
 			{
-				ExecuteRead(readCommand);
+				ExecuteRead(readCommand, serializer);
 			}
 		}
 
-		public async void ExecuteRead(IModbusReadCommand command)
+		public async void ExecuteRead(IModbusReadCommand command, ITcpSerializer serializer)
 		{
 			command.SetParams(serializer);
 			
 			try
 			{
 				await command.Execute();
-				proxy.Communication.Send(serializer.Message);
+				byte[] securedMessage = security.Secure(serializer.Message);
+				proxy.Communication.Send(securedMessage);
 			}
 			catch (Exception e)
 			{
@@ -73,7 +75,7 @@ namespace Proxy.Commands
             }
 		}
 
-		public void ExecuteWrite(IModbusWriteCommand command)
+		public void ExecuteWrite(IModbusWriteCommand command, ITcpSerializer serializer)
 		{
 			command.SetParams(serializer);
 			command.Execute();

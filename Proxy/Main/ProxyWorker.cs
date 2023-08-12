@@ -1,6 +1,7 @@
 ﻿using Common.DTO;
 using ModbusService;
 using Proxy.Connections;
+using Proxy.Security;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,14 +13,17 @@ namespace Proxy
 	{
 		IReceiver receiver;
 
+		ISecurityHandler security;
+
 		IDictionary<int, ITcpConnection> connections = new Dictionary<int, ITcpConnection>();
 
 		Tuple<int, IModbusConnection> modbusConnection;
 
 		public ProxyWorker()
 		{
+			security = new SecurityHandler();
 			modbusConnection = new Tuple<int, IModbusConnection>(0, new ModbusConnection(new ModbusServiceHandler()));
-			receiver = new Receiver(modbusConnection.Item2);
+			receiver = new Receiver(modbusConnection.Item2, security);
 		}
 
 		public async void Connect(string protocol, int localPort, int remotePort)
@@ -110,7 +114,7 @@ namespace Proxy
 
 				IConnectionParams connectionParams = new ConnectionParams(port);
 				ITcpServiceHandler serviceHandler = new TcpServiceHandler();
-				Console.WriteLine($"Listening on {port}.");
+				Console.WriteLine($"Listening on {port} port.");
 
 				IResponse response = await serviceHandler.ConnectionApi.Listen(connectionParams);
 				if (!response.IsSuccessful)
@@ -146,7 +150,7 @@ namespace Proxy
 
 			receiver.Receive(receiveConnection, sendConnection);
 
-			Console.WriteLine($"Started receiving on \"{receivePort}\" and forwarding to\"{sendPort}\".");
+			Console.WriteLine($"Receiving on {receivePort} port, forwarding to {sendPort} port.");
 		}
 
 		public void ListAllConections()
@@ -156,9 +160,14 @@ namespace Proxy
 			{
 				list += $"Tcp Port: {port}\n";
 			}
-			list = list.Remove(list.Length - 1);
+			list = list.Length > 0 ? list.Remove(list.Length - 1) : list;
 			list += modbusConnection.Item1 != 0 ? $"\nModbus Port: {modbusConnection.Item1}" : "";
 			Console.WriteLine(list);
+		}
+
+		public void ConfigureEncryption(EncryptionTypeCode encryptionCode)
+		{
+			security.ConfigureEncryption(encryptionCode);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using MasterApi.ViewModel;
 using MasterServices;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MasterApi.Api
 {
@@ -37,7 +38,10 @@ namespace MasterApi.Api
 
 		public async void ReadHolding(IReadParams readParams)
 		{
-			IReadAnalogResponse response = await services[readParams.ServiceType].ReadHolding(readParams);
+			IReadAnalogResponse response = await Task.Run(async () => 
+			{
+				return await services[readParams.ServiceType].ReadHolding(readParams);
+			});
 
 			if (!response.IsSuccessful)
 			{
@@ -51,7 +55,10 @@ namespace MasterApi.Api
 
 		public async void ReadAnalogInput(IReadParams readParams)
 		{
-			IReadAnalogResponse response = await services[readParams.ServiceType].ReadAnalogInput(readParams);
+			IReadAnalogResponse response = await Task.Run(async () =>
+			{
+				return await services[readParams.ServiceType].ReadAnalogInput(readParams);
+			});
 
 			if (!response.IsSuccessful)
 			{
@@ -65,7 +72,10 @@ namespace MasterApi.Api
 
 		public async void ReadCoil(IReadParams readParams)
 		{
-			IReadDiscreteResponse response = await services[readParams.ServiceType].ReadCoil(readParams);
+			IReadDiscreteResponse response = await Task.Run(async () =>
+			{
+				return await services[readParams.ServiceType].ReadCoil(readParams);
+			});
 
 			if (!response.IsSuccessful)
 			{
@@ -79,7 +89,10 @@ namespace MasterApi.Api
 
 		public async void ReadDiscreteInput(IReadParams readParams)
 		{
-			IReadDiscreteResponse response = await services[readParams.ServiceType].ReadDiscreteInput(readParams);
+			IReadDiscreteResponse response = await Task.Run(async () =>
+			{
+				return await services[readParams.ServiceType].ReadDiscreteInput(readParams);
+			});
 
 			if (!response.IsSuccessful)
 			{

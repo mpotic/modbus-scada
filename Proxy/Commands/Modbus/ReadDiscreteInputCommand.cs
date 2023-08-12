@@ -33,7 +33,7 @@ namespace Proxy.Commands
 			try
 			{
 				IReadDiscreteResponse response = await slave.Rtu.ReadDiscreteInput(readParams);
-				FormatResponse(response.BoolValues);
+				FormatResponse(response.ByteValues);
 			}
 			catch (Exception e)
 			{
@@ -41,7 +41,7 @@ namespace Proxy.Commands
 			}
 		}
 
-		private void FormatResponse(bool[] values)
+		private void FormatResponse(byte[] values)
 		{
 			serializer.InitMessage();
 			serializer.AddHeader(SenderCode.ProxyToMaster, FunctionCode.ReadDiscreteInputs);

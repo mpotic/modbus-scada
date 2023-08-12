@@ -1,4 +1,6 @@
-﻿namespace Proxy
+﻿using Proxy.Security;
+
+namespace Proxy
 {
 	internal interface IProxyWorker
 	{
@@ -11,5 +13,7 @@
 		void Receive(int receivePort, int sendPort);
 
 		void ListAllConections();
+
+		void ConfigureEncryption(EncryptionTypeCode encryptionCode);
 	}
 }

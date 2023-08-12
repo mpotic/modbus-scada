@@ -2,8 +2,14 @@
 {
 	internal interface IEncryption
 	{
-		void Encrypt(ref byte[] plaintext);
+		/// <summary>
+		/// Encrypts the plaintext and returns a byte[] with the encrypted text.
+		/// </summary>
+		byte[] Encrypt(byte[] plaintext);
 
-		void Decrypt(ref byte[] ciphertext);
+		/// <summary>
+		/// Decrypts ciphertext and returns the byte[] with the decrypted text.
+		/// </summary>
+		byte[] Decrypt(byte[] ciphertext);
 	}
 }

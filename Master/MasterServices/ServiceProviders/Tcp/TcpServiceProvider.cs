@@ -1,12 +1,10 @@
 ﻿using Common.Connection;
 using Common.DTO;
-using Common.Util;
 using Common.Enums;
 using System.Threading.Tasks;
 using TcpService;
 using Common.Callback;
 using System;
-using System.Diagnostics;
 
 namespace MasterServices
 {
@@ -61,13 +59,15 @@ namespace MasterServices
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
-					return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+					return new ReadAnalogResponse(sendResponse.IsSuccessful,
+						"Read holding request failed! " + sendResponse.ErrorMessage);
 				}
 
 				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
 				if (!receiveResponse.IsSuccessful)
 				{
-					return new ReadAnalogResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+					return new ReadAnalogResponse(receiveResponse.IsSuccessful,
+						"Read holding request failed! " + receiveResponse.ErrorMessage);
 				}
 
 				serializer.InitMessage(receiveResponse.Payload);
@@ -94,13 +94,15 @@ namespace MasterServices
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
-					return new ReadAnalogResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+					return new ReadAnalogResponse(sendResponse.IsSuccessful,
+						"Read analog input request failed! " + sendResponse.ErrorMessage);
 				}
 
 				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
 				if (!receiveResponse.IsSuccessful)
 				{
-					return new ReadAnalogResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+					return new ReadAnalogResponse(receiveResponse.IsSuccessful,
+						"Read analog input request failed! " + receiveResponse.ErrorMessage);
 				}
 
 				serializer.InitMessage(receiveResponse.Payload);
@@ -127,17 +129,19 @@ namespace MasterServices
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
-					return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+					return new ReadDiscreteResponse(sendResponse.IsSuccessful,
+						"Read coils request failed! " + sendResponse.ErrorMessage);
 				}
 
 				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
 				if (!receiveResponse.IsSuccessful)
 				{
-					return new ReadDiscreteResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+					return new ReadDiscreteResponse(receiveResponse.IsSuccessful,
+						"Read coils request failed! " + receiveResponse.ErrorMessage);
 				}
 
 				serializer.InitMessage(receiveResponse.Payload);
-				response = new ReadDiscreteResponse(serializer.ReadDiscreteReadValuesFromBody());
+				response = new ReadDiscreteResponse(serializer.ReadDiscreteValuesFromBody());
 			}
 			catch (Exception e)
 			{
@@ -160,17 +164,19 @@ namespace MasterServices
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
-					return new ReadDiscreteResponse(sendResponse.IsSuccessful, sendResponse.ErrorMessage);
+					return new ReadDiscreteResponse(sendResponse.IsSuccessful,
+						"Read discrete input request failed! " + sendResponse.ErrorMessage);
 				}
 
 				ITcpReceiveResponse receiveResponse = await communicationService.ReceiveWithTimeout();
 				if (!receiveResponse.IsSuccessful)
 				{
-					return new ReadDiscreteResponse(receiveResponse.IsSuccessful, receiveResponse.ErrorMessage);
+					return new ReadDiscreteResponse(receiveResponse.IsSuccessful,
+						"Read discrete input request failed! " + receiveResponse.ErrorMessage);
 				}
 
 				serializer.InitMessage(receiveResponse.Payload);
-				response = new ReadDiscreteResponse(serializer.ReadDiscreteReadValuesFromBody());
+				response = new ReadDiscreteResponse(serializer.ReadDiscreteValuesFromBody());
 			}
 			catch (Exception e)
 			{

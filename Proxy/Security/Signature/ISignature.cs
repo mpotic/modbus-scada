@@ -2,10 +2,10 @@
 {
 	internal interface ISignature
 	{
-		void Sign(ref byte[] data);
+		byte[] Sign(byte[] data);
 
-		bool Validate(byte[] data);
+		bool IsValid(byte[] data);
 
-		void RemoveSignature(ref byte[] data);
+		byte[] RemoveSignature(byte[] data);
 	}
 }

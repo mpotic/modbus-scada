@@ -35,7 +35,7 @@ namespace TcpService
 		public IResponse Disconnect()
 		{
 			IResponse response;
-			string customMessage = "Exception while disconnecting!\n";
+			string customMessage = "Error while disconnecting!\n";
 
 			try
 			{

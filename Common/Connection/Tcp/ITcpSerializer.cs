@@ -6,12 +6,18 @@ namespace Common.Connection
 	/// Initializes a byte array message which at most takes 1024 bytes of storage.
 	/// Used for interpreting the packet that represents a request for the modbus slave.
 	/// The packet is structured as one of the following: 
-	///     write request: "SenderCode;FunctionCode//SlaveAddress;StartAddress;NumberOfPoints",
-	///     read request: "SenderCode;FunctionCode//SlaveAddress;StartAddress;WriteValues".
+	///     write request: "Length;SenderCode;FunctionCode//SlaveAddress;StartAddress;NumberOfPoints",
+	///     read request: "Length;SenderCode;FunctionCode//SlaveAddress;StartAddress;WriteValues".
 	/// </summary>
 	public interface ITcpSerializer
     {
         byte[] Message { get; }
+
+        /// <summary>
+        /// Determines using regex whether the data parameter is a sequence that had been previously serialized in the format
+        /// that this class serializes in.
+        /// </summary>
+        bool IsByteArrayTcpSerializedData(byte[] data);
 
         /// <summary>
         /// Initializes the message with the separator.
@@ -113,12 +119,7 @@ namespace Common.Connection
         /// <summary>
         /// Reads byte array WriteValues from the message body.
         /// </summary>
-        byte[] ReadCoilWriteValuesFromBody();
-
-		/// <summary>
-		/// Reads the discrete values previously acquired from slave. 
-		/// </summary>
-		bool[] ReadDiscreteReadValuesFromBody();
+        byte[] ReadDiscreteValuesFromBody();
 
         /// <summary>
         /// Reads the analog values previously acquired from slave. 

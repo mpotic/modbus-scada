@@ -1,6 +1,5 @@
 ﻿using Common.Enums;
 using Common.Util;
-using System;
 
 namespace Common.DTO
 {
@@ -21,6 +20,15 @@ namespace Common.DTO
 			SlaveAddress = slaveAddress;
 			StartAddress = startAddress;
 			ByteWriteValues = converter.ConvertToByteArray(writeValues);
+		}
+
+		public WriteCoilParams(byte slaveAddress, ushort startAddress, byte[] writeValues)
+		{
+			IByteArrayConverter converter = new ByteArrayConverter();
+			ServiceType = ServiceTypeCode.ModbusService;
+			SlaveAddress = slaveAddress;
+			StartAddress = startAddress;
+			ByteWriteValues = writeValues;
 		}
 
 		public ServiceTypeCode ServiceType { get; set; }

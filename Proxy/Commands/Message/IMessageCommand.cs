@@ -1,11 +1,10 @@
-﻿using Common.Connection;
-using Proxy.Connections;
+﻿using Proxy.Connections;
 
 namespace Proxy.Commands
 {
-    internal interface IMessageCommand
+	internal interface IMessageCommand
 	{
-		void SetParams(IConnection connection, ITcpSerializer serializer);
+		void SetParams(IConnection connection, byte[] message);
 
 		void Execute();
 	}

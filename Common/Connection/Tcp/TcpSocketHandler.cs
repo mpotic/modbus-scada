@@ -13,7 +13,7 @@ namespace Common.Connection
 
 		Socket workingSocket;
 
-		int expectedPacketSize = 1024;
+		int expectedPacketSize = 2048;
 
 		public bool IsConnected
 		{

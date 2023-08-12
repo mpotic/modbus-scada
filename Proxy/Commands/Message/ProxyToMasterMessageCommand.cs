@@ -1,7 +1,7 @@
 ﻿using Common.Connection;
 using Common.Enums;
-using Common.Util;
 using Proxy.Connections;
+using Proxy.Security;
 
 namespace Proxy.Commands
 {
@@ -11,20 +11,30 @@ namespace Proxy.Commands
 
 		private ITcpConnection connection;
 
-		IByteArrayConverter converter = new ByteArrayConverter();
+		private byte[] message;
 
-		public void SetParams(IConnection connection, ITcpSerializer serializer)
+		private readonly ISecurityHandler security;
+
+		internal ProxyToMasterMessageCommand(ISecurityHandler security)
 		{
-			this.serializer = serializer;
+			this.security = security;
+		}
+
+		public void SetParams(IConnection connection, byte[] message)
+		{
 			this.connection = (ITcpConnection)connection;
+			this.message = message;
 		}
 
 		public void Execute()
 		{
+			ITcpSerializer serializer = new TcpSerializer();
+			serializer.InitMessage(message);
 			FunctionCode functionCode = serializer.ReadFunctionCodeFromHeader();
 			SenderCode senderCode = SenderCode.Master;
 			serializer.ReplaceHeader(senderCode, functionCode);
 			serializer.AddSizeToHeader();
+
 			connection.Communication.Send(serializer.Message);
 		}
 	}

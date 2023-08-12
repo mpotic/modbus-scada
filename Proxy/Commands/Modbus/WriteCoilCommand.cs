@@ -1,6 +1,5 @@
 ﻿using Common.Connection;
 using Common.DTO;
-using Common.Util;
 using Proxy.Connections;
 using System;
 
@@ -26,12 +25,11 @@ namespace Proxy.Commands
 		{
 			byte slaveAddress = serializer.ReadSlaveAddressFromBody();
 			ushort startAddress = serializer.ReadStartAddressFromBody();
-			byte[] writeValues = serializer.ReadCoilWriteValuesFromBody();
-			IByteArrayConverter converter = new ByteArrayConverter();
+			byte[] writeValues = serializer.ReadDiscreteValuesFromBody();
 
 			try
 			{
-				IWriteCoilParams writeParams = new WriteCoilParams(slaveAddress, startAddress, converter.ConvertToBoolArray(writeValues));
+				IWriteCoilParams writeParams = new WriteCoilParams(slaveAddress, startAddress, writeValues);
 				slave.Rtu.WriteCoil(writeParams);
 			}
 			catch (Exception e)

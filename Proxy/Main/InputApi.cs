@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Proxy.Security;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Proxy
@@ -9,6 +11,8 @@ namespace Proxy
 		private readonly IProxyWorker proxyWorker = new ProxyWorker();
 
 		private readonly IDictionary<string, Action<string>> actions;
+
+		private readonly IDictionary<string, EncryptionTypeCode> encryptionTypes;
 
 		public InputApi()
 		{
@@ -20,7 +24,14 @@ namespace Proxy
 				{ "listen", Listen },
 				{ "receive", Receive },
 				{ "list", ListAllConnections },
-				{ "menu", PrintMenu }
+				{ "menu", PrintMenu },
+				{ "enc", Encrypt }
+			};
+
+			encryptionTypes = new Dictionary<string, EncryptionTypeCode>()
+			{
+				{ "aes", EncryptionTypeCode.AES },
+				{ "none", EncryptionTypeCode.None }
 			};
 		}
 
@@ -57,12 +68,12 @@ namespace Proxy
 
 		private string[] GetInputParams(string input)
 		{
-			return input.Split(new char[] { ' ' }, 2)[1].Split(' ');
+			return input.Split(new char[] { ' ' }, 2)[1].Split(' ').Select(x => x.Trim()).ToArray();
 		}
 
 		private string GetInputCommand(string input)
 		{
-			return input.Split(new char[] { ' ' }, 2)[0];
+			return input.Split(new char[] { ' ' }, 2)[0].Trim();
 		}
 
 		public void Connect(string input)
@@ -101,15 +112,23 @@ namespace Proxy
 			proxyWorker.ListAllConections();
 		}
 
+		public void Encrypt(string input)
+		{
+			string[] inputParams = GetInputParams(input);
+			encryptionTypes.TryGetValue(inputParams[0], out EncryptionTypeCode encryptionType);
+			proxyWorker.ConfigureEncryption(encryptionType);
+		}
+
 		private void PrintMenu(string input = null)
 		{
-			Console.WriteLine("- - - - - - - - - - - - M E N U - - - - - - - - - - - -\n" +
+			Console.WriteLine(
+				"- - - - - - - - - - - - M E N U - - - - - - - - - - - -\n" +
 				"Connect: \"{modbus/tcp} {localPort} {remotePort}\"\n" +
 				"Disconnect: \"disconnect {localPort}\"\n" +
 				"Listen: \"listen {localPort}\"\n" +
 				"Receive\\Send: \"receive {receivePort} {sendPort}\"\n" +
 				"List ports in use: \"list\"\n" +
-				"Encrypt: \"encrypt {true/false}\"\n" +
+				"Encrypt: \"enc {algorithm}\"\n" +
 				"Sign: \"sign {true/false}\"\n" +
 			 	"Exit: \"exit\"\n" +
 				"- - - - - - - - - - - - - - - - - - - - - - - - - - - -");

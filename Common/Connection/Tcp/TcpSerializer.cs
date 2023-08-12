@@ -1,8 +1,8 @@
 ﻿using Common.Enums;
-using Common.Util;
 using System;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Common.Connection
 {
@@ -13,6 +13,17 @@ namespace Common.Connection
 		public const string innerSeparator = ";";
 
 		public byte[] Message { get; set; } = new byte[0];
+
+		public bool IsByteArrayTcpSerializedData(byte[] data)
+		{
+			string input = Encoding.UTF8.GetString(data);
+			if(Regex.IsMatch(input, @"^\d*;[^;]*;[^/]*//[^;]*;\d*;[^;]*$"))
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		public void InitMessage()
 		{
@@ -253,30 +264,6 @@ namespace Common.Connection
 			return writeValues;
 		}
 
-		public byte[] ReadCoilWriteValuesFromBody()
-		{
-			string messageString = Encoding.UTF8.GetString(Message);
-			string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);
-			string[] bodyParts = messageParts[1].Split(new[] { innerSeparator }, StringSplitOptions.None);
-
-			if (bodyParts.Length < 3)
-			{
-				throw new Exception("Incorrect message formatting.");
-			}
-
-			string[] values = bodyParts[2].Split(',');
-			byte[] writeValues = new byte[values.Length];
-			for(int i = 0; i < values.Length; i++)
-			{
-				if (!byte.TryParse(values[i], out writeValues[i]))
-				{
-					throw new Exception("Incorrect message formatting.");
-				}
-			}
-
-			return writeValues;
-		}
-
 		public ushort[] ReadAnalogReadValuesFromBody()
 		{
 			string messageString = Encoding.UTF8.GetString(Message);
@@ -301,7 +288,7 @@ namespace Common.Connection
 			return readValues;
 		}
 
-		public bool[] ReadDiscreteReadValuesFromBody()
+		public byte[] ReadDiscreteValuesFromBody()
 		{
 			string messageString = Encoding.UTF8.GetString(Message);
 			string[] messageParts = messageString.Split(new[] { separator }, StringSplitOptions.None);
@@ -309,20 +296,20 @@ namespace Common.Connection
 
 			if (bodyParts.Length < 3)
 			{
-				throw new Exception("Incorrect message formatting: Discrete values not found.");
+				throw new Exception("Incorrect message formatting.");
 			}
 
 			string[] values = bodyParts[2].Split(',');
-			bool[] readValues = new bool[values.Length];
-			for (int i = 0; i < values.Length; i++)
+			byte[] writeValues = new byte[values.Length];
+			for(int i = 0; i < values.Length; i++)
 			{
-				if (!bool.TryParse(values[i], out readValues[i]))
+				if (!byte.TryParse(values[i], out writeValues[i]))
 				{
-					throw new Exception("Incorrect message formatting: Invalid ReadValues.");
+					throw new Exception("Incorrect message formatting.");
 				}
 			}
 
-			return readValues;
+			return writeValues;
 		}
 
 		public override string ToString()

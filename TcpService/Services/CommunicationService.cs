@@ -15,15 +15,27 @@ namespace TcpService
 
 		public async Task<ITcpReceiveResponse> Receive()
 		{
+			ITcpReceiveResponse response;
+			byte[] values;
 			try
 			{
-				byte[] values = await connectionHandle.TcpSocket.ReceiveAsync();
-				return new TcpReceiveResponse(true, values);
+				values = await connectionHandle.TcpSocket.ReceiveAsync();
 			}
 			catch (Exception e)
 			{
 				throw e;
 			}
+
+			if (values.Length == 0)
+			{
+				response = new TcpReceiveResponse(false, "No data was received!");
+			}
+			else
+			{
+				response = new TcpReceiveResponse(true, values);
+			}
+
+			return response;
 		}
 
 		public IResponse Send(byte[] message)
@@ -35,15 +47,27 @@ namespace TcpService
 
 		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
 		{
+			ITcpReceiveResponse response;
+			byte[] values;
 			try
 			{
-				byte[] values = await connectionHandle.TcpSocket.ReceiveWithTimeout();
-				return new TcpReceiveResponse(true, values);
+				values = await connectionHandle.TcpSocket.ReceiveWithTimeout();
 			}
 			catch (Exception e)
 			{
 				throw e;
 			}
+
+			if (values.Length == 0)
+			{
+				response = new TcpReceiveResponse(false, "No data was received!");
+			}
+			else
+			{
+				response = new TcpReceiveResponse(true, values);
+			}
+
+			return response;
 		}
 	}
 }
