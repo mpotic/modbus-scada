@@ -13,11 +13,11 @@ namespace Common.Connection
 		public const string innerSeparator = ";";
 
 		public byte[] Message { get; set; } = new byte[0];
-
+		
 		public bool IsByteArrayTcpSerializedData(byte[] data)
 		{
 			string input = Encoding.UTF8.GetString(data);
-			if(Regex.IsMatch(input, @"^\d*;[^;]*;[^/]*//[^;]*;\d*;[^;]*$"))
+			if(Regex.IsMatch(input, @"^\d*;[^;]*;[^/]*//[^;]*;\d*;[^;]*$") && !input.Contains('.'))
 			{
 				return true;
 			}

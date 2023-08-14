@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Proxies;
 using System.Threading.Tasks;
 
 namespace Proxy
 {
 	internal class InputApi : IInputApi
 	{
-		private readonly IProxyWorker proxyWorker = new ProxyWorker();
+		private readonly IProxyWorker proxyWorker;
+
+		private readonly ISecurityHandler security = new SecurityHandler();
 
 		private readonly IDictionary<string, Action<string>> actions;
 
@@ -25,7 +28,9 @@ namespace Proxy
 				{ "receive", Receive },
 				{ "list", ListAllConnections },
 				{ "menu", PrintMenu },
-				{ "enc", Encrypt }
+				{ "enc", Encrypt },
+				{ "sign", Sign },
+				{ "cert", Certificate }
 			};
 
 			encryptionTypes = new Dictionary<string, EncryptionTypeCode>()
@@ -33,6 +38,8 @@ namespace Proxy
 				{ "aes", EncryptionTypeCode.AES },
 				{ "none", EncryptionTypeCode.None }
 			};
+
+			proxyWorker = new ProxyWorker(security);
 		}
 
 		public void ReadUserInput()
@@ -115,8 +122,31 @@ namespace Proxy
 		public void Encrypt(string input)
 		{
 			string[] inputParams = GetInputParams(input);
-			encryptionTypes.TryGetValue(inputParams[0], out EncryptionTypeCode encryptionType);
-			proxyWorker.ConfigureEncryption(encryptionType);
+			if(!encryptionTypes.TryGetValue(inputParams[0], out EncryptionTypeCode encryptionType))
+			{
+				throw new Exception("Invalid encryption type!");
+            }
+			security.ConfigureEncryption(encryptionType);
+		}
+
+		public void Sign(string input)
+		{
+			string[] inputParams = GetInputParams(input);
+			bool isSign = bool.Parse(inputParams[0]);
+			security.ConfigureSigning(isSign);
+		}
+
+		public void Certificate(string input)
+		{
+			string[] inputParams = GetInputParams(input);
+			if (inputParams[0] == "make")
+			{
+				security.GenerateCert();
+			}
+			else if (inputParams[0] == "load")
+			{
+				security.LoadCert();
+			}
 		}
 
 		private void PrintMenu(string input = null)
@@ -128,9 +158,10 @@ namespace Proxy
 				"Listen: \"listen {localPort}\"\n" +
 				"Receive\\Send: \"receive {receivePort} {sendPort}\"\n" +
 				"List ports in use: \"list\"\n" +
-				"Encrypt: \"enc {algorithm}\"\n" +
-				"Sign: \"sign {true/false}\"\n" +
-			 	"Exit: \"exit\"\n" +
+				"Encrypt messages: \"enc {algorithm/none}\"\n" +
+				"Sign messages: \"sign {true/false}\"\n" +
+				"Create certificates: \"cert make\"\n" +
+				"Load certificates: \"cert load\"\n" +
 				"- - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 		}
 	}

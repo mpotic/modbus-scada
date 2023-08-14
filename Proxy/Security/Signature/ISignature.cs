@@ -2,10 +2,12 @@
 {
 	internal interface ISignature
 	{
-		byte[] Sign(byte[] data);
+		byte[] SignData(byte[] data);
 
-		bool IsValid(byte[] data);
+		bool IsSignatureValid(byte[] originalData, byte[] signature);
 
-		byte[] RemoveSignature(byte[] data);
+		byte[] GetOriginalData(byte[] data);
+
+		byte[] GetSignatureFromSignedData(byte[] data);
 	}
 }

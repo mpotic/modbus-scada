@@ -13,7 +13,7 @@ namespace Proxy.Security
 
 		private byte[] iv;
 
-		private readonly string filepath = "../../Security/AesKeyAndIV.json";
+		private readonly string filepath = "Resources/Security/AesKeyAndIV.json";
 
 		public AesEncryption()
 		{
@@ -66,7 +66,7 @@ namespace Proxy.Security
 					}
 
 					byte[] encryptedData = memoryStream.ToArray();
-					byte[] header = Encoding.UTF8.GetBytes(encryptedData.Length.ToString() + ".");
+					byte[] header = BitConverter.GetBytes(encryptedData.Length);
 					encryptedData = header.Concat(encryptedData).ToArray();
 
 					return encryptedData;
@@ -76,11 +76,9 @@ namespace Proxy.Security
 
 		public byte[] Decrypt(byte[] cipherdata)
 		{
-			string encodedString = Encoding.UTF8.GetString(cipherdata);
-			int length = int.Parse(encodedString.Split('.')[0]);
-			int offset = length.ToString().Length + 1;
-			byte[] ciphertext = new byte[length];
-			Array.Copy(cipherdata, offset, ciphertext, 0, length);
+			int encryptionLength = BitConverter.ToInt32(cipherdata, 0);
+			byte[] ciphertext = new byte[encryptionLength];
+			Array.Copy(cipherdata, 4, ciphertext, 0, encryptionLength);
 
 			using (Aes aesAlg = Aes.Create())
 			{
@@ -93,7 +91,7 @@ namespace Proxy.Security
 					ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 					using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write))
 					{
-						cryptoStream.Write(ciphertext, 0, length);
+						cryptoStream.Write(ciphertext, 0, encryptionLength);
 					}
 
 					byte[] decryptedData = memoryStream.ToArray();

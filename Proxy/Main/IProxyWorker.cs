@@ -13,7 +13,5 @@ namespace Proxy
 		void Receive(int receivePort, int sendPort);
 
 		void ListAllConections();
-
-		void ConfigureEncryption(EncryptionTypeCode encryptionCode);
 	}
 }

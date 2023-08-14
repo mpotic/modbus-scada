@@ -19,9 +19,9 @@ namespace Proxy
 
 		Tuple<int, IModbusConnection> modbusConnection;
 
-		public ProxyWorker()
+		public ProxyWorker(ISecurityHandler security)
 		{
-			security = new SecurityHandler();
+			this.security = security;
 			modbusConnection = new Tuple<int, IModbusConnection>(0, new ModbusConnection(new ModbusServiceHandler()));
 			receiver = new Receiver(modbusConnection.Item2, security);
 		}
@@ -163,11 +163,6 @@ namespace Proxy
 			list = list.Length > 0 ? list.Remove(list.Length - 1) : list;
 			list += modbusConnection.Item1 != 0 ? $"\nModbus Port: {modbusConnection.Item1}" : "";
 			Console.WriteLine(list);
-		}
-
-		public void ConfigureEncryption(EncryptionTypeCode encryptionCode)
-		{
-			security.ConfigureEncryption(encryptionCode);
 		}
 	}
 }

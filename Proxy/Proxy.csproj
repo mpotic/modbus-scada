@@ -72,6 +72,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main\ProxyWorker.cs" />
     <Compile Include="Main\Receiver.cs" />
+    <Compile Include="Security\Certificate\CertWorker.cs" />
+    <Compile Include="Security\Certificate\ICertWorker.cs" />
     <Compile Include="Security\Encryption\AesEncryption.cs" />
     <Compile Include="Security\Encryption\EncryptionTypeCode.cs" />
     <Compile Include="Security\Encryption\IEncryption.cs" />

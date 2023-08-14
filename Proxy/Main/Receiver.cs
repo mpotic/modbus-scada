@@ -51,12 +51,13 @@ namespace Proxy
 						throw new Exception(response.ErrorMessage);
 					}
 
+					Console.WriteLine($"- - - - - - - - - - New message - - - - - - - - - -");
+
 					byte[] message = HandleSecurity(response.Payload);
 					serializer.InitMessage(message);
 					SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
 
-					Console.WriteLine($"- - - - - - - - - - {senderCode} - - - - - - - - - -");
-					Console.WriteLine("Payload: " + Encoding.UTF8.GetString(response.Payload));
+					Console.WriteLine("Payload: " + @Encoding.UTF8.GetString(response.Payload));
 					Console.WriteLine("Serialized: " + serializer);
 
 					processingCommand[senderCode].SetParams(sendConnection, message);

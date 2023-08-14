@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Proxy.Security.Certificate;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Proxy.Security
 {
 	internal class SecurityHandler : ISecurityHandler
 	{
-		IEncryption encryption = null;
+		IEncryption encryptionHandle = null;
 
-		ISignature signature = null;
+		ISignature signatureHandle = null;
+
+		ICertWorker certWorker = new CertWorker();
 
 		private IDictionary<EncryptionTypeCode, Func<IEncryption>> encryptionTypes = new
 			Dictionary<EncryptionTypeCode, Func<IEncryption>>()
@@ -21,14 +25,14 @@ namespace Proxy.Security
 			byte[] data = new byte[message.Length];
 			Array.Copy(message, data, message.Length);
 
-			if (signature != null)
+			if (signatureHandle != null)
 			{
-				data = signature.Sign(data);
+				data = signatureHandle.SignData(data);
 			}
 
-			if (encryption != null)
+			if (encryptionHandle != null)
 			{
-				data = encryption.Encrypt(data);
+				data = encryptionHandle.Encrypt(data);
 			}
 
 			return data;
@@ -39,19 +43,25 @@ namespace Proxy.Security
 			byte[] data = new byte[message.Length];
 			Array.Copy(message, data, message.Length);
 
-			if (encryption != null)
+			if (encryptionHandle != null)
 			{
-				data = encryption.Decrypt(data);
+				data = encryptionHandle.Decrypt(data);
 			}
 
-			if (signature != null)
+			if (signatureHandle != null)
 			{
-				if (!signature.IsValid(data))
+				byte[] originalData = signatureHandle.GetOriginalData(data);
+				byte[] signature = signatureHandle.GetSignatureFromSignedData(data);
+
+				Console.WriteLine("Original data: " + Encoding.UTF8.GetString(originalData));
+				Console.WriteLine("Signature: " + @Encoding.UTF8.GetString(originalData));
+
+				if (!signatureHandle.IsSignatureValid(originalData, signature))
 				{
 					throw new Exception("Invalid signature!");
 				}
 
-				data = signature.RemoveSignature(data);
+				data = originalData;
 			}
 
 			return data;
@@ -59,8 +69,32 @@ namespace Proxy.Security
 
 		public void ConfigureEncryption(EncryptionTypeCode encryptionType)
 		{
-			encryption = encryptionTypes[encryptionType].Invoke();
+			encryptionHandle = encryptionTypes[encryptionType].Invoke();
             Console.WriteLine("Encryption mode: " + encryptionType.ToString());
         }
-	}
+
+		public void ConfigureSigning(bool isSign)
+		{
+			if (isSign)
+			{
+				signatureHandle = new Signature(certWorker);
+                Console.WriteLine("Signing messages using RSA certificates.");
+            }
+			else
+			{
+				signatureHandle = null;
+                Console.WriteLine("Stopped signing.");
+            }
+		}
+
+		public void GenerateCert()
+		{
+			certWorker.GenerateCertificate();
+		}
+
+		public void LoadCert()
+		{
+			certWorker.LoadCertificates();
+		}
+ 	}
 }
