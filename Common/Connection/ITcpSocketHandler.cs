@@ -13,8 +13,6 @@ namespace Common.Connection
 
         Task AcceptAsync();
 
-        Task ConnectAsync(int remotePort);
-
         Task ConnectAsync(int remotePort, int localPort);
 
 		Task<byte[]> ReceiveAsync();
@@ -22,6 +20,8 @@ namespace Common.Connection
         Task<byte[]> ReceiveWithTimeout();
 
 		void Send(byte[] message);
+
+        void ClearReceiveBuffer();
 
         void CloseAndUnbindWorkingSocket();
 

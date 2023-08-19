@@ -10,5 +10,7 @@ namespace TcpService
 		Task<ITcpReceiveResponse> ReceiveWithTimeout();
 
 		IResponse Send(byte[] message);
+
+		IResponse ClearReceiveBuffer();
 	}
 }

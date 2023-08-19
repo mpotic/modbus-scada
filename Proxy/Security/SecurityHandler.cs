@@ -45,7 +45,9 @@ namespace Proxy.Security
 
 			if (encryptionHandle != null)
 			{
-				data = encryptionHandle.Decrypt(data);
+				int encryptionLength = BitConverter.ToInt32(message, 0);
+                Console.WriteLine("Ciphtertext: " + BitConverter.ToString(message, 4, encryptionLength));
+                data = encryptionHandle.Decrypt(data);
 			}
 
 			if (signatureHandle != null)
@@ -54,7 +56,7 @@ namespace Proxy.Security
 				byte[] signature = signatureHandle.GetSignatureFromSignedData(data);
 
 				Console.WriteLine("Original data: " + Encoding.UTF8.GetString(originalData));
-				Console.WriteLine("Signature: " + @Encoding.UTF8.GetString(originalData));
+				Console.WriteLine($@"Signature (hex): {BitConverter.ToString(signature)}");
 
 				if (!signatureHandle.IsSignatureValid(originalData, signature))
 				{

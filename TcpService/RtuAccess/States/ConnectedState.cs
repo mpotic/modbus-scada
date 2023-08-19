@@ -76,6 +76,26 @@ namespace TcpService
 			return response;
 		}
 
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			ITcpReceiveResponse response;
+
+			try
+			{
+				response = await communicationService.ReceiveWithTimeout();
+			}
+			catch (Exception e)
+			{
+				response = new TcpReceiveResponse(false, "Error while trying to receive the message!\n" + e.Message);
+				if (!connectionService.IsConnected)
+				{
+					Disconnect();
+				}
+			}
+
+			return response;
+		}
+
 		public IResponse Send(byte[] message)
 		{
 			IResponse response;
@@ -96,24 +116,9 @@ namespace TcpService
 			return response;
 		}
 
-		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		public IResponse ClearReceiveBuffer()
 		{
-			ITcpReceiveResponse response;
-
-			try
-			{
-				response = await communicationService.ReceiveWithTimeout();
-			}
-			catch (Exception e)
-			{
-				response = new TcpReceiveResponse(false, "Error while trying to receive the message!\n" + e.Message);
-				if (!connectionService.IsConnected)
-				{
-					Disconnect();
-				}
-			}
-
-			return response;
+			return communicationService.ClearReceiveBuffer();
 		}
 	}
 }

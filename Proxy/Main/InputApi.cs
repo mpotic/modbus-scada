@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Proxies;
 using System.Threading.Tasks;
 
 namespace Proxy
@@ -30,7 +29,8 @@ namespace Proxy
 				{ "menu", PrintMenu },
 				{ "enc", Encrypt },
 				{ "sign", Sign },
-				{ "cert", Certificate }
+				{ "cert", Certificate },
+				{ "cls", Clear }
 			};
 
 			encryptionTypes = new Dictionary<string, EncryptionTypeCode>()
@@ -122,10 +122,10 @@ namespace Proxy
 		public void Encrypt(string input)
 		{
 			string[] inputParams = GetInputParams(input);
-			if(!encryptionTypes.TryGetValue(inputParams[0], out EncryptionTypeCode encryptionType))
+			if (!encryptionTypes.TryGetValue(inputParams[0], out EncryptionTypeCode encryptionType))
 			{
 				throw new Exception("Invalid encryption type!");
-            }
+			}
 			security.ConfigureEncryption(encryptionType);
 		}
 
@@ -149,6 +149,11 @@ namespace Proxy
 			}
 		}
 
+		public void Clear(string input)
+		{
+			Console.Clear();
+		}
+
 		private void PrintMenu(string input = null)
 		{
 			Console.WriteLine(
@@ -162,6 +167,8 @@ namespace Proxy
 				"Sign messages: \"sign {true/false}\"\n" +
 				"Create certificates: \"cert make\"\n" +
 				"Load certificates: \"cert load\"\n" +
+				"Menu: \"menu\"\n" +
+				"Clear console: \"cls\"\n" +
 				"- - - - - - - - - - - - - - - - - - - - - - - - - - - -");
 		}
 	}

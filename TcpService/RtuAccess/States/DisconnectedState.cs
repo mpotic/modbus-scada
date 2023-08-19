@@ -88,14 +88,19 @@ namespace TcpService
 			return await Task.FromResult(new TcpReceiveResponse(false, "There is no established connection!"));
 		}
 
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await Task.FromResult(new TcpReceiveResponse(false, "There is no established connection!"));
+		}
+
 		public IResponse Send(byte[] message)
 		{
 			return new Response(false, "There is no established connection!");
 		}
 
-		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		public IResponse ClearReceiveBuffer()
 		{
-			return await Task.FromResult(new TcpReceiveResponse(false, "There is no established connection!"));
+			return new Response(false, "There is no established connection!");
 		}
 	}
 }

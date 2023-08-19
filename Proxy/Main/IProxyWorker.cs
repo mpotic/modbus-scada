@@ -1,6 +1,4 @@
-﻿using Proxy.Security;
-
-namespace Proxy
+﻿namespace Proxy
 {
 	internal interface IProxyWorker
 	{

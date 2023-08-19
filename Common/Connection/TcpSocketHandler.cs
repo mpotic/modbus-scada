@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Common.Connection
@@ -44,14 +43,6 @@ namespace Common.Connection
 			}
 
 			workingSocket = await listenSocket.AcceptAsync();
-		}
-
-		public async Task ConnectAsync(int remotePort)
-		{
-			workingSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-			workingSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-			IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Loopback, remotePort);
-			await workingSocket.ConnectAsync(remoteEndpoint);
 		}
 
 		public async Task ConnectAsync(int remotePort, int localPort)
@@ -101,8 +92,6 @@ namespace Common.Connection
 					buffer = await ReceiveAsync();
 					break;
 				}
-
-				Thread.Sleep(10);
 			}
 
 			return buffer;
@@ -113,6 +102,15 @@ namespace Common.Connection
 			byte[] buffer = new byte[expectedPacketSize];
 			message.Take(1024).ToArray().CopyTo(buffer, 0);
 			workingSocket.Send(buffer);
+		}
+
+		public void ClearReceiveBuffer()
+		{
+			byte[] buffer = new byte[2048];
+			while (workingSocket.Available > 0)
+			{
+				workingSocket.Receive(buffer, 2048, SocketFlags.None);
+			}
 		}
 
 		public void CloseAndUnbindWorkingSocket()

@@ -50,5 +50,10 @@ namespace TcpService
 		{
 			return state.Send(message);
 		}
+
+		public IResponse ClearReceiveBuffer()
+		{
+			return state.ClearReceiveBuffer();
+		}
 	}
 }

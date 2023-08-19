@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using Proxy.Security.Certificate;
+﻿using Proxy.Security.Certificate;
 using System;
 using System.Linq;
-using System.Text;
 
 namespace Proxy.Security
 {

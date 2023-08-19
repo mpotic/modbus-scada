@@ -26,5 +26,10 @@ namespace TcpService
 		{
 			return socketAccess.Send(message);
 		}
+
+		public IResponse ClearReceiveBuffer()
+		{
+			return socketAccess.ClearReceiveBuffer();
+		}
 	}
 }

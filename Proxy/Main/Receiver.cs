@@ -7,7 +7,6 @@ using Proxy.Security;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Proxy
 {
@@ -24,7 +23,7 @@ namespace Proxy
 			processingCommand = new Dictionary<SenderCode, IMessageCommand>
 			{
 				{ SenderCode.Master, new MasterMessageCommand(security) },
-				{ SenderCode.ProxyToMaster, new ProxyToMasterMessageCommand(security) },
+				{ SenderCode.ProxyToMaster, new ProxyToMasterMessageCommand() },
 				{ SenderCode.ProxyToSlave, new ProxyToSlaveMessageCommand(modbusConnection, security) }
 			};
 
@@ -56,8 +55,6 @@ namespace Proxy
 					byte[] message = HandleSecurity(response.Payload);
 					serializer.InitMessage(message);
 					SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
-
-					Console.WriteLine("Payload: " + @Encoding.UTF8.GetString(response.Payload));
 					Console.WriteLine("Serialized: " + serializer);
 
 					processingCommand[senderCode].SetParams(sendConnection, message);

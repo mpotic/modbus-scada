@@ -53,14 +53,19 @@ namespace TcpService
 			return await Task.FromResult(new TcpReceiveResponse(false, "Listening attempt in progress! Disconnect to stop listening."));
 		}
 
+		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		{
+			return await Task.FromResult(new TcpReceiveResponse(false, "Listening attempt in progress! Disconnect to stop listening."));
+		}
+
 		public IResponse Send(byte[] message)
 		{
 			return new Response(false, "Listening attempt in progress! Disconnect to stop listening.");
 		}
 
-		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
+		public IResponse ClearReceiveBuffer()
 		{
-			return await Task.FromResult(new TcpReceiveResponse(false, "Listening attempt in progress! Disconnect to stop listening."));
+			return new Response(false, "Listening attempt in progress! Disconnect to stop listening.");
 		}
 	}
 }

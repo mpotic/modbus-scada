@@ -56,6 +56,8 @@ namespace MasterServices
 			IReadAnalogResponse response;
 			try
 			{
+				communicationService.ClearReceiveBuffer();
+
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
@@ -91,6 +93,8 @@ namespace MasterServices
 			IReadAnalogResponse response;
 			try
 			{
+				communicationService.ClearReceiveBuffer();
+
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
@@ -126,6 +130,8 @@ namespace MasterServices
 			IReadDiscreteResponse response;
 			try
 			{
+				communicationService.ClearReceiveBuffer();
+
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{
@@ -161,6 +167,8 @@ namespace MasterServices
 			IReadDiscreteResponse response;
 			try
 			{
+				communicationService.ClearReceiveBuffer();
+
 				IResponse sendResponse = communicationService.Send(serializer.Message);
 				if (!sendResponse.IsSuccessful)
 				{

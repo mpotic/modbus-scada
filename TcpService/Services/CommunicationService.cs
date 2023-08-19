@@ -38,13 +38,6 @@ namespace TcpService
 			return response;
 		}
 
-		public IResponse Send(byte[] message)
-		{
-			connectionHandle.TcpSocket.Send(message);
-
-			return new Response(true);
-		}
-
 		public async Task<ITcpReceiveResponse> ReceiveWithTimeout()
 		{
 			ITcpReceiveResponse response;
@@ -60,7 +53,7 @@ namespace TcpService
 
 			if (values.Length == 0)
 			{
-				response = new TcpReceiveResponse(false, "No data was received!");
+				response = new TcpReceiveResponse(false, "Timeout exceeded, no data was received!");
 			}
 			else
 			{
@@ -68,6 +61,20 @@ namespace TcpService
 			}
 
 			return response;
+		}
+
+		public IResponse Send(byte[] message)
+		{
+			connectionHandle.TcpSocket.Send(message);
+
+			return new Response(true);
+		}
+
+		public IResponse ClearReceiveBuffer()
+		{
+			connectionHandle.TcpSocket.ClearReceiveBuffer();
+
+			return new Response(true);
 		}
 	}
 }

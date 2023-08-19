@@ -7,18 +7,9 @@ namespace Proxy.Commands
 {
 	class ProxyToMasterMessageCommand : IMessageCommand
 	{
-		private ITcpSerializer serializer;
-
 		private ITcpConnection connection;
 
 		private byte[] message;
-
-		private readonly ISecurityHandler security;
-
-		internal ProxyToMasterMessageCommand(ISecurityHandler security)
-		{
-			this.security = security;
-		}
 
 		public void SetParams(IConnection connection, byte[] message)
 		{

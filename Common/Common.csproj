@@ -65,11 +65,11 @@
     <Compile Include="DTO\Request\ConnectionParams.cs" />
     <Compile Include="DTO\Request\Interface\IConnectionParams.cs" />
     <Compile Include="Enums\SenderCode.cs" />
-    <Compile Include="Connection\Tcp\ITcpSerializer.cs" />
-    <Compile Include="Connection\Tcp\ITcpSocketHandler.cs" />
+    <Compile Include="Connection\ITcpSerializer.cs" />
+    <Compile Include="Connection\ITcpSocketHandler.cs" />
     <Compile Include="Enums\FunctionCode.cs" />
-    <Compile Include="Connection\Tcp\TcpSerializer.cs" />
-    <Compile Include="Connection\Tcp\TcpSocketHandler.cs" />
+    <Compile Include="Connection\TcpSerializer.cs" />
+    <Compile Include="Connection\TcpSocketHandler.cs" />
     <Compile Include="Enums\ServiceTypeCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ByteArrayConverter.cs" />

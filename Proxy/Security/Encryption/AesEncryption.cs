@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Proxy.Security
 {
@@ -22,7 +21,10 @@ namespace Proxy.Security
 
 		private void GenerateAndSaveOrReadKeyAndIV(string keyAndIVFilePath)
 		{
-			if(File.Exists(filepath))
+			bool isFileAccessedRecently = File.Exists(filepath) &&
+				(DateTime.Now - File.GetLastAccessTime(filepath)) < TimeSpan.FromMinutes(5);
+
+			if (isFileAccessedRecently)
 			{
 				string jsonContent = File.ReadAllText(filepath);
 				JObject keyValuePair = JObject.Parse(jsonContent);
