@@ -26,8 +26,9 @@ namespace MasterView
 				{ ActionCode.Connect, new ConnectAction(connectionApi) },
 				{ ActionCode.Disconnect, new DisconnectAction(connectionApi)}
 			};
-			ConnectionStateCallback modbusCallback = new ConnectionStateCallback(ModbusStatusTextBlock, ModbusStatusEllipse);
-			ConnectionStateCallback tcpCallback = new ConnectionStateCallback(TcpStatusTextBlock, TcpStatusEllipse);
+			
+			ConnectionStateCallback modbusCallback = new ConnectionStateCallback(ModbusStatusTextBlock, ModbusStatusEllipse, this);
+			ConnectionStateCallback tcpCallback = new ConnectionStateCallback(TcpStatusTextBlock, TcpStatusEllipse, this);
 			connectionApi.RegisterConnectionStatusCallback(modbusCallback, ServiceTypeCode.ModbusService);
 			connectionApi.RegisterConnectionStatusCallback(tcpCallback, ServiceTypeCode.TcpService);
 		}

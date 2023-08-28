@@ -1,7 +1,6 @@
 ﻿using Common.Connection;
 using Common.Enums;
 using Proxy.Connections;
-using Proxy.Security;
 
 namespace Proxy.Commands
 {

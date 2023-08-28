@@ -157,7 +157,7 @@ namespace Proxy
 		private void PrintMenu(string input = null)
 		{
 			Console.WriteLine(
-				"- - - - - - - - - - - - M E N U - - - - - - - - - - - -\n" +
+				"- - - - - - - - - - - M E N U - - - - - - - - - - -\n" +
 				"Connect: \"{modbus/tcp} {localPort} {remotePort}\"\n" +
 				"Disconnect: \"disconnect {localPort}\"\n" +
 				"Listen: \"listen {localPort}\"\n" +
@@ -169,7 +169,7 @@ namespace Proxy
 				"Load certificates: \"cert load\"\n" +
 				"Menu: \"menu\"\n" +
 				"Clear console: \"cls\"\n" +
-				"- - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+				"- - - - - - - - - - - - - - - - - - - - - - - - - -");
 		}
 	}
 }

@@ -89,6 +89,7 @@ namespace Proxy
 			{
 				modbusConnection.Item2.Connection.Disconnect();
 				Console.WriteLine($"Disconnected Modbus on port {port}.");
+				modbusConnection = new Tuple<int, IModbusConnection>(0, modbusConnection.Item2);
 
 				return;
 			}

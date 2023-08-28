@@ -13,6 +13,8 @@ namespace MasterView.Callback
 
 		Ellipse connectionEllipse;
 
+		UserControl userControl;
+
 		Dictionary<ConnectionStatusCode, SolidColorBrush> ellipseColors = new Dictionary<ConnectionStatusCode, SolidColorBrush>()
 		{ 
 			{ ConnectionStatusCode.Disconnected, Brushes.Red },
@@ -21,16 +23,20 @@ namespace MasterView.Callback
 			{ ConnectionStatusCode.Listening, Brushes.Blue }
 		};
 
-		public ConnectionStateCallback(TextBlock text, Ellipse ellipse)
+		public ConnectionStateCallback(TextBlock text, Ellipse ellipse, UserControl control)
 		{
 			connectionText = text;
 			connectionEllipse = ellipse;
+			userControl = control;
 		}
 
 		public void ConenctionStatusChanged(ConnectionStatusCode statusCode)
 		{
-			connectionText.Text = statusCode.ToString();
-			connectionEllipse.Fill = ellipseColors[statusCode];
+			userControl.Dispatcher.Invoke(() =>
+			{
+				connectionText.Text = statusCode.ToString();
+				connectionEllipse.Fill = ellipseColors[statusCode];
+			});
 		}
 	}
 }
