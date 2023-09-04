@@ -7,7 +7,8 @@ namespace Common.Connection
 	/// Used for interpreting the packet that represents a request for the modbus slave.
 	/// The packet is structured as one of the following: 
 	///     write request: "Length;SenderCode;FunctionCode//SlaveAddress;StartAddress;NumberOfPoints",
-	///     read request: "Length;SenderCode;FunctionCode//SlaveAddress;StartAddress;WriteValues".
+	///     read request: "Length;SenderCode;FunctionCode//SlaveAddress;StartAddress;WriteValues",
+	///     write response: "Length;SenderCode;FunctionCode//;;Values",
 	/// </summary>
 	public interface ITcpSerializer
     {
@@ -30,7 +31,7 @@ namespace Common.Connection
         void InitMessage(byte[] message);
 
         /// <summary>
-        /// Adds current size of the message to header.
+        /// Adds current size of the message to header. "Size" itself is also included when calculating size.
         /// </summary>
         void AddSizeToHeader();
 

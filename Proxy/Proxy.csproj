@@ -67,11 +67,11 @@
     <Compile Include="Main\InputApi.cs" />
     <Compile Include="Main\IInputApi.cs" />
     <Compile Include="Main\IProxyWorker.cs" />
-    <Compile Include="Main\IReceiver.cs" />
+    <Compile Include="Main\Receiving\IReceiver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main\ProxyWorker.cs" />
-    <Compile Include="Main\Receiver.cs" />
+    <Compile Include="Main\Receiving\Receiver.cs" />
     <Compile Include="Security\Certificate\CertWorker.cs" />
     <Compile Include="Security\Certificate\ICertWorker.cs" />
     <Compile Include="Security\Encryption\AesEncryption.cs" />

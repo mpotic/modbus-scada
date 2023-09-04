@@ -38,7 +38,8 @@ namespace Common.Connection
 
 		public void AddSizeToHeader()
 		{
-			byte[] size = Encoding.UTF8.GetBytes((Message.Length + Message.Length.ToString().Length + 1).ToString());
+			int headerSize = (Message.Length + Message.Length.ToString().Length).ToString().Length;
+			byte[] size = Encoding.UTF8.GetBytes((Message.Length + headerSize + 1).ToString());
 			size = size.Concat(Encoding.UTF8.GetBytes(";")).ToArray();
 			Message = size.Concat(Message).ToArray();
 		}
@@ -52,7 +53,8 @@ namespace Common.Connection
 
 		public void ReplaceSizeInHeader()
 		{
-			byte[] size = Encoding.UTF8.GetBytes((Message.Length + Message.Length.ToString().Length + 1).ToString());
+			int headerSize = (Message.Length + Message.Length.ToString().Length).ToString().Length;
+			byte[] size = Encoding.UTF8.GetBytes((Message.Length + headerSize + 1).ToString());
 			size = size.Concat(Encoding.UTF8.GetBytes(";")).ToArray();
 			Message = size.Concat(Message).ToArray();
 		}

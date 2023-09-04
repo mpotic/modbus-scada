@@ -161,9 +161,9 @@ namespace Proxy
 			{
 				list += $"Tcp Port: {port}\n";
 			}
-			list = list.Length > 0 ? list.Remove(list.Length - 1) : list;
-			list += modbusConnection.Item1 != 0 ? $"\nModbus Port: {modbusConnection.Item1}" : "";
-			Console.WriteLine(list);
+
+			list += modbusConnection.Item1 != 0 ? $"Modbus Port: {modbusConnection.Item1}\n" : "";
+			Console.Write(list);
 		}
 	}
 }

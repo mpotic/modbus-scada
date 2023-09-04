@@ -102,13 +102,5 @@ namespace Proxy.Security
 				}
 			}
 		}
-
-		~AesEncryption()
-		{
-			if (File.Exists(filepath))
-			{
-				File.Delete(filepath);
-			}
-		}
 	}
 }

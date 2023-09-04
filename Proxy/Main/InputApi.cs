@@ -22,9 +22,9 @@ namespace Proxy
 			{
 				{ "modbus", Connect },
 				{ "tcp", Connect },
-				{ "disconnect", Disconnect },
+				{ "disc", Disconnect },
 				{ "listen", Listen },
-				{ "receive", Receive },
+				{ "rec", Receive },
 				{ "list", ListAllConnections },
 				{ "menu", PrintMenu },
 				{ "enc", Encrypt },
@@ -132,6 +132,11 @@ namespace Proxy
 		public void Sign(string input)
 		{
 			string[] inputParams = GetInputParams(input);
+			if(inputParams.Length < 0)
+			{
+				throw new Exception("No sign option was provided {true/false}!");
+			}
+
 			bool isSign = bool.Parse(inputParams[0]);
 			security.ConfigureSigning(isSign);
 		}
@@ -147,6 +152,10 @@ namespace Proxy
 			{
 				security.LoadCert();
 			}
+			else
+			{
+				throw new Exception("Invalid certificate option!");
+			}
 		}
 
 		public void Clear(string input)
@@ -159,9 +168,9 @@ namespace Proxy
 			Console.WriteLine(
 				"- - - - - - - - - - - M E N U - - - - - - - - - - -\n" +
 				"Connect: \"{modbus/tcp} {localPort} {remotePort}\"\n" +
-				"Disconnect: \"disconnect {localPort}\"\n" +
+				"Disconnect: \"disc {localPort}\"\n" +
 				"Listen: \"listen {localPort}\"\n" +
-				"Receive\\Send: \"receive {receivePort} {sendPort}\"\n" +
+				"Receive\\Send: \"rece {receivePort} {sendPort}\"\n" +
 				"List ports in use: \"list\"\n" +
 				"Encrypt messages: \"enc {algorithm/none}\"\n" +
 				"Sign messages: \"sign {true/false}\"\n" +

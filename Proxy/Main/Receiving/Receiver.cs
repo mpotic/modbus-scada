@@ -7,6 +7,7 @@ using Proxy.Security;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Proxy
 {
@@ -75,7 +76,7 @@ namespace Proxy
 
 		public byte[] HandleSecurity(byte[] input)
 		{
-			if (serializer.IsByteArrayTcpSerializedData(input))
+			if (serializer.IsByteArrayTcpSerializedData(input) && Encoding.UTF8.GetString(input).Contains("Master"))
 			{
 				return input;
 			}

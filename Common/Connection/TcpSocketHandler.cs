@@ -100,16 +100,16 @@ namespace Common.Connection
 		public void Send(byte[] message)
 		{
 			byte[] buffer = new byte[expectedPacketSize];
-			message.Take(1024).ToArray().CopyTo(buffer, 0);
+			message.Take(expectedPacketSize).ToArray().CopyTo(buffer, 0);
 			workingSocket.Send(buffer);
 		}
 
 		public void ClearReceiveBuffer()
 		{
-			byte[] buffer = new byte[2048];
+			byte[] buffer = new byte[expectedPacketSize];
 			while (workingSocket.Available > 0)
 			{
-				workingSocket.Receive(buffer, 2048, SocketFlags.None);
+				workingSocket.Receive(buffer, expectedPacketSize, SocketFlags.None);
 			}
 		}
 
