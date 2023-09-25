@@ -8,7 +8,9 @@
 
 		void Listen(int port);
 
-		void Receive(int receivePort, int sendPort);
+		void ReceiveProxy(int receivePort, int sendPort);
+
+		void ReceiveMaster(int receivePort, int sendPort);
 
 		void ListAllConections();
 	}

@@ -2,7 +2,7 @@
 {
 	internal interface ICertWorker
 	{
-		void GenerateCertificate();
+		void MakeCertificates();
 		
 		void LoadCertificates();
 

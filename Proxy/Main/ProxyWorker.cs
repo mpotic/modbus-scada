@@ -4,6 +4,8 @@ using Proxy.Connections;
 using Proxy.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TcpService;
 
@@ -13,15 +15,14 @@ namespace Proxy
 	{
 		IReceiver receiver;
 
-		ISecurityHandler security;
-
 		IDictionary<int, ITcpConnection> connections = new Dictionary<int, ITcpConnection>();
 
 		Tuple<int, IModbusConnection> modbusConnection;
 
+		List<Tuple<int, int>> receiveSendPorts = new List<Tuple<int, int>>();
+
 		public ProxyWorker(ISecurityHandler security)
 		{
-			this.security = security;
 			modbusConnection = new Tuple<int, IModbusConnection>(0, new ModbusConnection(new ModbusServiceHandler()));
 			receiver = new Receiver(modbusConnection.Item2, security);
 		}
@@ -132,26 +133,49 @@ namespace Proxy
 			}
 		}
 
-		public void Receive(int receivePort, int sendPort)
+		public void PrepareReceive(int recPort, int sendPort, out ITcpConnection recCon, out ITcpConnection sendCon)
 		{
-			ITcpConnection receiveConnection;
-			connections.TryGetValue(receivePort, out receiveConnection);
-			ITcpConnection sendConnection;
-			connections.TryGetValue(sendPort, out sendConnection);
-
-			if (receiveConnection == null)
+			if(receiveSendPorts.Contains(new Tuple<int, int>(recPort, sendPort)))
 			{
-				throw new Exception($"Port {receivePort} not connected!");
-			}
+                throw new Exception($"Already receiving on {recPort} and sending to {sendPort}.");
+            }
 
-			if (sendConnection == null)
+			connections.TryGetValue(recPort, out recCon);
+			connections.TryGetValue(sendPort, out sendCon);
+
+			if (recCon == null)
 			{
 				throw new Exception($"Port {sendPort} not connected!");
 			}
 
-			receiver.Receive(receiveConnection, sendConnection);
+			if (sendCon == null)
+			{
+				throw new Exception($"Port {sendPort} not connected!");
+			}
+		}
 
+		public async void ReceiveProxy(int receivePort, int sendPort)
+		{
+			var ports = new Tuple<int, int>(receivePort, sendPort);
+
+			PrepareReceive(receivePort, sendPort, out ITcpConnection recCon, out ITcpConnection sendCon);
+			receiveSendPorts.Add(new Tuple<int, int>(receivePort, sendPort));
 			Console.WriteLine($"Receiving on {receivePort} port, forwarding to {sendPort} port.");
+
+			await receiver.ReceiveProxy(recCon, sendCon);
+			receiveSendPorts.Remove(ports);
+		}
+
+		public async void ReceiveMaster(int receivePort, int sendPort)
+		{
+			var ports = new Tuple<int, int>(receivePort, sendPort);
+
+			PrepareReceive(receivePort, sendPort, out ITcpConnection recCon, out ITcpConnection sendCon);
+			receiveSendPorts.Add(ports);
+			Console.WriteLine($"Receiving on {receivePort} port, forwarding to {sendPort} port.");
+
+			await receiver.ReceiveMaster(recCon, sendCon);
+			receiveSendPorts.Remove(ports);
 		}
 
 		public void ListAllConections()

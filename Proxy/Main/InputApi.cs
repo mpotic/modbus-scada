@@ -22,11 +22,11 @@ namespace Proxy
 			{
 				{ "modbus", Connect },
 				{ "tcp", Connect },
-				{ "disc", Disconnect },
 				{ "listen", Listen },
-				{ "rec", Receive },
+				{ "disc", Disconnect },
+				{ "master", ReceiveMaster },
+				{ "proxy", ReceiveProxy },
 				{ "list", ListAllConnections },
-				{ "menu", PrintMenu },
 				{ "enc", Encrypt },
 				{ "sign", Sign },
 				{ "cert", Certificate },
@@ -63,8 +63,11 @@ namespace Proxy
 				actions.TryGetValue(command, out action);
 				if (action == null)
 				{
-					throw new Exception("Invalid command! Enter \"menu\" for the list of commands.");
-				}
+                    Console.WriteLine("Invalid command!");
+					PrintMenu();
+
+					return;
+                }
 				actions[command].Invoke(input);
 			}
 			catch (Exception e)
@@ -106,12 +109,20 @@ namespace Proxy
 			proxyWorker.Listen(listenPort);
 		}
 
-		public void Receive(string input)
+		public void ReceiveMaster(string input)
 		{
 			string[] inputParams = GetInputParams(input);
 			int localPort = int.Parse(inputParams[0]);
 			int remotePort = int.Parse(inputParams[1]);
-			proxyWorker.Receive(localPort, remotePort);
+			proxyWorker.ReceiveMaster(localPort, remotePort);
+		}
+
+		public void ReceiveProxy(string input)
+		{
+			string[] inputParams = GetInputParams(input);
+			int localPort = int.Parse(inputParams[0]);
+			int remotePort = int.Parse(inputParams[1]);
+			proxyWorker.ReceiveProxy(localPort, remotePort);
 		}
 
 		public void ListAllConnections(string input = null)
@@ -168,15 +179,14 @@ namespace Proxy
 			Console.WriteLine(
 				"- - - - - - - - - - - M E N U - - - - - - - - - - -\n" +
 				"Connect: \"{modbus/tcp} {localPort} {remotePort}\"\n" +
-				"Disconnect: \"disc {localPort}\"\n" +
 				"Listen: \"listen {localPort}\"\n" +
-				"Receive\\Send: \"rece {receivePort} {sendPort}\"\n" +
+				"Disconnect: \"disc {localPort}\"\n" +
+				"Receive\\Send: \"{master/proxy} {receivePort} {sendPort}\"\n" +
 				"List ports in use: \"list\"\n" +
 				"Encrypt messages: \"enc {algorithm/none}\"\n" +
 				"Sign messages: \"sign {true/false}\"\n" +
 				"Create certificates: \"cert make\"\n" +
 				"Load certificates: \"cert load\"\n" +
-				"Menu: \"menu\"\n" +
 				"Clear console: \"cls\"\n" +
 				"- - - - - - - - - - - - - - - - - - - - - - - - - -");
 		}

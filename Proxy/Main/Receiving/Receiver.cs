@@ -7,7 +7,7 @@ using Proxy.Security;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Proxy
 {
@@ -31,35 +31,19 @@ namespace Proxy
 			this.security = security;
 		}
 
-		public async void Receive(ITcpConnection receiveConnection, ITcpConnection sendConnection)
+		public async Task ReceiveProxy(ITcpConnection receiveConnection, ITcpConnection sendConnection)
 		{
 			while (true)
 			{
 				try
 				{
-					ITcpReceiveResponse response = await receiveConnection.Communication.Receive();
-
-					if (response.Payload == null || response.Payload.Length <= 0)
+					byte[] message = await ReceiveSingleMessage(receiveConnection);
+					if (message == null || message.Length == 0)
 					{
-						Console.WriteLine("Receiving aborted.");
-
-						return;
+						break;
 					}
 
-					if (!response.IsSuccessful)
-					{
-						throw new Exception(response.ErrorMessage);
-					}
-
-					Console.WriteLine($"- - - - - - - - - - New message - - - - - - - - - -");
-
-					byte[] message = HandleSecurity(response.Payload);
-					serializer.InitMessage(message);
-					SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
-					Console.WriteLine("Serialized: " + serializer);
-
-					processingCommand[senderCode].SetParams(sendConnection, message);
-					processingCommand[senderCode].Execute();
+					ProcessProxyMessage(message, sendConnection);
 				}
 				catch (SocketException ex)
 				when (ex.SocketErrorCode == SocketError.OperationAborted || ex.SocketErrorCode == SocketError.Shutdown)
@@ -74,13 +58,79 @@ namespace Proxy
 			}
 		}
 
-		public byte[] HandleSecurity(byte[] input)
+		public async Task ReceiveMaster(ITcpConnection receiveConnection, ITcpConnection sendConnection)
 		{
-			if (serializer.IsByteArrayTcpSerializedData(input) && Encoding.UTF8.GetString(input).Contains("Master"))
+			while (true)
 			{
-				return input;
+				try
+				{
+					byte[] message = await ReceiveSingleMessage(receiveConnection);
+					if (message == null || message.Length == 0)
+					{
+						break;
+					}
+
+					ProcessMasterMessage(message, sendConnection);
+				}
+				catch (SocketException ex)
+				when (ex.SocketErrorCode == SocketError.OperationAborted || ex.SocketErrorCode == SocketError.Shutdown)
+				{
+					Console.WriteLine("Receiving socket closed.");
+					break;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+				}
+			}
+		}
+
+		private async Task<byte[]> ReceiveSingleMessage(ITcpConnection receiveConnection)
+		{
+			ITcpReceiveResponse response = await receiveConnection.Communication.Receive();
+
+			if (response.Payload == null || response.Payload.Length <= 0)
+			{
+				Console.WriteLine("Receiving aborted.");
+
+				return null;
 			}
 
+			if (!response.IsSuccessful)
+			{
+				throw new Exception(response.ErrorMessage);
+			}
+
+			return response.Payload;
+		}
+
+		private void ProcessMasterMessage(byte[] message, ITcpConnection sendConnection)
+		{
+			Console.WriteLine($"- - - - - - - - - - Master message - - - - - - - - - -");
+
+			serializer.InitMessage(message);
+			SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
+			Console.WriteLine("Serialized: " + serializer);
+
+			processingCommand[senderCode].SetParams(sendConnection, message);
+			processingCommand[senderCode].Execute();
+		}
+
+		private void ProcessProxyMessage(byte[] message, ITcpConnection sendConnection)
+		{
+			Console.WriteLine($"- - - - - - - - - - Proxy message - - - - - - - - - -");
+
+			byte[] extractedData = HandleSecurity(message);
+			serializer.InitMessage(extractedData);
+			SenderCode senderCode = serializer.ReadSenderCodeFromHeader();
+			Console.WriteLine("Serialized: " + serializer);
+
+			processingCommand[senderCode].SetParams(sendConnection, extractedData);
+			processingCommand[senderCode].Execute();
+		}
+
+		public byte[] HandleSecurity(byte[] input)
+		{
 			byte[] validatedInput = security.Validate(input);
 
 			return validatedInput;
